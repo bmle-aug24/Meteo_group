@@ -51,7 +51,7 @@ pip freeze > requirements.txt
 echo "===== Installation terminée ====="
 echo "Structure du projet créée :
 .
-├── src/   # ici les scripts
+├── src/   # source
 ├── tests/  #ici les tests
 ├── data/   # ici la data avec la data brute et pretraiter
 │   ├── raw/
