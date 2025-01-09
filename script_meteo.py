@@ -1,11 +1,11 @@
 import pandas as pd
+from ingest_data import get_day_data  # Importation de la fonction pour récupérer les données via l'API
 
-# Chemins des fichiers
-existing_file_path = "main/data/weatherAUS_Clean.csv"  # Fichier DataFrame existant
-raw_data_file_path = "bmle-main/data/raw/weatherAUS.csv"  # Fichier contenant les données brutes
+# Chemin du fichier CSV contenant les données brutes
+raw_data_file_path = "données/brutes/meteoAUS.csv"  
 
-# Charger le DataFrame existant
-df = pd.read_csv(existing_file_path)
+# Charger les données brutes depuis le fichier CSV
+df = pd.read_csv(raw_data_file_path)
 
 # Fonction pour formater et ajouter de nouvelles données au DataFrame
 def format_and_add_new_data(df, raw_data):
@@ -27,7 +27,7 @@ def format_and_add_new_data(df, raw_data):
         if key in new_row:
             new_row[key] = value
     
-    # Ajouter la nouvelle ligne au DataFrame
+    # Nouvelle ligne au DataFrame
     df.loc[len(df)] = new_row  # Ajoute une nouvelle ligne à la fin
     
     return df
@@ -67,15 +67,14 @@ def save_dataframe(df, file_path):
     df.to_csv(file_path, index=False)
     print(f"Fichier {file_path} mis à jour avec succès.")
 
-# EXECUTER LES FONCTIONS
+# TEST DES FONCTIONS
 def main():
-    # Charger les données brutes depuis un fichier CSV
-    raw_data_df = pd.read_csv(raw_data_file_path)
-    
-    # Par exemple, on prend la première ligne du fichier CSV comme nouvelles données
-    raw_data = raw_data_df.iloc[0].to_dict()  # Convertir la première ligne en dictionnaire
+    # Récupérer les données via l'API
+    data = get_day_data()
 
-    # Ajouter les nouvelles données au DataFrame
+    raw_data = data[0]['Location']  # Exemple d'accès à une location spécifique, ajuster si nécessaire
+
+    # Ajout des nouvelles données au DataFrame
     print("Ajout des nouvelles données au DataFrame...")
     updated_df = format_and_add_new_data(df, raw_data)
     print("Données mises à jour :")
@@ -87,7 +86,7 @@ def main():
     updated_df = update_rain_tomorrow(updated_df, new_rain_data)
 
     # Sauvegarder les modifications
-    save_dataframe(updated_df, existing_file_path)
+    save_dataframe(updated_df, raw_data_file_path)
 
 if __name__ == "__main__":
     main()
