@@ -19,18 +19,12 @@ def format_and_add_new_data(df, raw_data):
     Returns:
         pd.DataFrame: DataFrame mis à jour avec la nouvelle ligne.
     """
-    # Initialiser une ligne vide avec les colonnes existantes
-    new_row = {col: None for col in df.columns}
+    new_row_df = pd.DataFrame([raw_data])  # Convertir le dictionnaire en DataFrame avec une seule ligne
     
-    # Remplir les colonnes avec les données disponibles dans raw_data
-    for key, value in raw_data.items():
-        if key in new_row:
-            new_row[key] = value
+    # Concaténer le DataFrame existant avec le nouveau
+    updated_df = pd.concat([df, new_row_df], ignore_index=True)
     
-    # Nouvelle ligne au DataFrame
-    df.loc[len(df)] = new_row  # Ajoute une nouvelle ligne à la fin
-    
-    return df
+    return updated_df
 
 # Fonction pour mettre à jour la colonne RainTomorrow
 def update_rain_tomorrow(df, new_data):
