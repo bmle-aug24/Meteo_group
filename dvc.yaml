@@ -1,0 +1,24 @@
+stages:
+  preprocess:
+    cmd: python preprocess/preprocess.py
+    deps:
+      - preprocess/preprocess.py
+      - data/raw/weatherAUS.csv
+    outs:
+      - data/processed/X_train.csv
+      - data/processed/X_test.csv
+      - data/processed/y_train.csv
+      - data/processed/y_test.csv
+
+  train:
+    cmd: python model/xgboost_model.py
+    deps:
+      - model/xgboost_model.py
+      - config/config.yaml
+      - data/processed/X_train.csv
+      - data/processed/X_test.csv
+      - data/processed/y_train.csv
+      - data/processed/y_test.csv
+    outs:
+      - model/xgboost_model.json
+      - metrics/metrics.json

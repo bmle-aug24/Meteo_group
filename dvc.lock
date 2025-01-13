@@ -1,0 +1,80 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python preprocess/preprocess.py
+    deps:
+    - path: data/raw/weatherAUS.csv
+      hash: md5
+      md5: a65cf8b8719b1a65db4f361eeec18457
+      size: 14094055
+      isexec: true
+    - path: preprocess/preprocess.py
+      hash: md5
+      md5: 28ce1937cb168386e5a3238cef9a6808
+      size: 3151
+      isexec: true
+    outs:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: 097a3390dd6aa2d980bd776879157257
+      size: 3561387
+      isexec: true
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: 36dacf9c031431fa63fbf5c92bfba9da
+      size: 14288687
+      isexec: true
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 003836b1cedf64507fe998d7e2b9ef2e
+      size: 56891
+      isexec: true
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 732d21a8e6b745a4e1924487488302a4
+      size: 227521
+      isexec: true
+  train:
+    cmd: python model/xgboost_model.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: d4d2a20f1c6dcd8f7ea30252f687163c
+      size: 498
+      isexec: true
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: 097a3390dd6aa2d980bd776879157257
+      size: 3561387
+      isexec: true
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: 36dacf9c031431fa63fbf5c92bfba9da
+      size: 14288687
+      isexec: true
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 003836b1cedf64507fe998d7e2b9ef2e
+      size: 56891
+      isexec: true
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 732d21a8e6b745a4e1924487488302a4
+      size: 227521
+      isexec: true
+    - path: model/xgboost_model.py
+      hash: md5
+      md5: 035eba552c118abd11e1c4eed74efe0e
+      size: 3323
+      isexec: true
+    outs:
+    - path: metrics/metrics.json
+      hash: md5
+      md5: ec3e3834e6527470eca8be2996b46696
+      size: 127
+      isexec: true
+    - path: model/xgboost_model.json
+      hash: md5
+      md5: c7dc6dc8ecde648981893813b7c3eb32
+      size: 682946
+      isexec: true
