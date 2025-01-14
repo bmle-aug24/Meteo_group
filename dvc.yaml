@@ -24,4 +24,3 @@ stages:
     outs:
       - model/xgboost_model.json
       - metrics/metrics.json
-      - metrics/metrics/.gitignore

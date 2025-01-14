@@ -45,12 +45,12 @@ stages:
       size: 227521
       isexec: true
   train:
-    cmd: python model/xgboost_model.py
+    cmd: python src/xgboost_model.py
     deps:
     - path: config/config.yaml
       hash: md5
-      md5: d4d2a20f1c6dcd8f7ea30252f687163c
-      size: 498
+      md5: fc7a7e90f01bfc9c502d8e556dc78230
+      size: 500
       isexec: true
     - path: data/processed/X_test.csv
       hash: md5
@@ -72,19 +72,19 @@ stages:
       md5: 732d21a8e6b745a4e1924487488302a4
       size: 227521
       isexec: true
-    - path: model/xgboost_model.py
+    - path: src/xgboost_model.py
       hash: md5
-      md5: 035eba552c118abd11e1c4eed74efe0e
-      size: 3323
+      md5: 50da9ec63a622408404d36f12f84ae1d
+      size: 3628
       isexec: true
     outs:
     - path: metrics/metrics.json
       hash: md5
-      md5: ec3e3834e6527470eca8be2996b46696
+      md5: af8b947c8e985fa8fce7b61a84c849a1
       size: 127
       isexec: true
     - path: model/xgboost_model.json
       hash: md5
-      md5: c7dc6dc8ecde648981893813b7c3eb32
-      size: 682946
+      md5: 8d053083179358f3e970f769be59b529
+      size: 670637
       isexec: true

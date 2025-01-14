@@ -1,61 +1,52 @@
-import yaml
+import pandas as pd
 import xgboost as xgb
+from xgboost import XGBClassifier
+import yaml
 import mlflow
 import mlflow.xgboost
-import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-import json
+from sklearn.model_selection import train_test_split
 import os
+import json
 
 
 def load_config(yaml_path):
     """
     Charger la configuration depuis un fichier YAML.
     """
-    if not os.path.exists(yaml_path):
-        raise FileNotFoundError(f"Le fichier de configuration {yaml_path} n'existe pas.")
-    
     with open(yaml_path, "r") as file:
         return yaml.safe_load(file)
 
 
 def validate_data(X, y):
     """
-    Valider les données avant l'entraînement du modèle.
+    Vérifie qu'il n'y a pas de NaN ou de valeurs inattendues dans les données.
     """
-    assert X is not None and y is not None, "Les données d'entrée ou la cible sont manquantes."
-    assert X.shape[0] == y.shape[0], "Le nombre de lignes de X et y ne correspond pas."
+    if X.isnull().sum().sum() > 0:
+        raise ValueError("Des NaN sont présents dans les caractéristiques (X).")
+    if y.isnull().sum() > 0:
+        raise ValueError("Des NaN sont présents dans la cible (y).")
+    print(f"Données valides : {len(X)} lignes et {len(y)} cibles.")
 
 
 def train_and_evaluate(X_train, y_train, X_test, y_test, config):
     """
-    Entraîner le modèle XGBoost et évaluer ses performances.
+    Entraîner et évaluer un modèle XGBoost avec suivi via MLflow.
     """
-    model_config = config["model"]["xgboost"]
-
-    # Configurer MLflow
+    # Configurez MLflow
     mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
     mlflow.set_experiment(config["mlflow"]["experiment_name"])
 
-    # Créer une nouvelle expérience si elle n'existe pas déjà
-    experiment_name = config["mlflow"]["experiment_name"]
-    experiment = mlflow.get_experiment_by_name(experiment_name)
-
-    if experiment is None:
-        print(f"Création de l'expérience : {experiment_name}")
-        mlflow.create_experiment(experiment_name)
-
-    # Commencer une nouvelle exécution
     with mlflow.start_run():
-        # Définir et entraîner le modèle
-        params = model_config
+        # Définir les paramètres XGBoost
+        params = config["model"]["xgboost"]
         model = xgb.XGBClassifier(**params)
         model.fit(X_train, y_train)
 
         # Prédictions
         y_pred = model.predict(X_test)
 
-        # Calcul des métriques
+        # Calculer les métriques
         metrics = {
             "accuracy": accuracy_score(y_test, y_pred),
             "precision": precision_score(y_test, y_pred, zero_division=0),
@@ -63,7 +54,7 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, config):
             "f1_score": f1_score(y_test, y_pred, zero_division=0),
         }
 
-        # Sauvegarder les métriques
+        # Enregistrer les métriques dans MLflow et un fichier
         mlflow.log_params(params)
         mlflow.log_metrics(metrics)
 
@@ -77,8 +68,8 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, config):
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
         model.save_model(model_path)
 
-        # Enregistrer le modèle dans MLflow
-        input_example = X_test.iloc[0:1]  # Exemple d'entrée
+        # Enregistrer le modèle dans MLflow avec un exemple d'entrée
+        input_example = X_test.iloc[0:1]
         mlflow.xgboost.log_model(model, "xgboost_model", input_example=input_example)
 
         print(f"Metrics logged in MLflow: {metrics}")
@@ -101,4 +92,3 @@ if __name__ == "__main__":
 
     # Entraîner et évaluer le modèle
     train_and_evaluate(X_train, y_train, X_test, y_test, config)
-
