@@ -71,15 +71,15 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, config):
     mlflow.end_run()
 
     # Sauvegarder le modèle localement
-    model_dir = config["output"]["model_path"]  # Utiliser le modèle depuis la configuration
-    os.makedirs(os.path.dirname(model_dir), exist_ok=True)  # Créer le répertoire si nécessaire
+    model_dir = os.path.dirname(config["output"]["model_path"])  # Assurez-vous que le répertoire existe
+    os.makedirs(model_dir, exist_ok=True)  # Créer le répertoire si nécessaire
 
     # Debugging: Vérifiez si le répertoire existe et est accessible en écriture
-    if not os.path.exists(os.path.dirname(model_dir)):
-        print(f"Erreur : Le répertoire {os.path.dirname(model_dir)} n'existe pas.")
+    if not os.path.exists(model_dir):
+        print(f"Erreur : Le répertoire {model_dir} n'existe pas.")
     else:
-        print(f"Le répertoire {os.path.dirname(model_dir)} est prêt.")
+        print(f"Le répertoire {model_dir} est prêt.")
 
     # Sauvegarder le modèle
-    model.save_model(model_dir)  # Sauvegarde du modèle
-    print(f"Modèle sauvegardé à : {model_dir}")
+    model.save_model(config["output"]["model_path"])  # Sauvegarde du modèle
+    print(f"Modèle sauvegardé à : {config['output']['model_path']}")
