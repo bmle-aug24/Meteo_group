@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  ingestion:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ingestion_image
+    container_name: ingestion
+    volumes:
+      - ../../data/raw:/app/data/raw

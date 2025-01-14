@@ -85,7 +85,7 @@ def ingest_data(location):
         return None
 
 def get_day_data():
-    return [{location:ingest_data(location)} for location in URL_DICT if URL_DICT[location]]
+    return [ingest_data(location) for location in URL_DICT if URL_DICT[location]]
 
 def main():
     data = get_day_data()
