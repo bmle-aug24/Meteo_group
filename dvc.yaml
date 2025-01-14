@@ -1,19 +1,21 @@
 stages:
   preprocess:
-    cmd: python preprocess/preprocess.py
+    cmd: python src/preprocess.py
     deps:
-      - preprocess/preprocess.py
+      - src/preprocess.py
+      - config/config.yaml
       - data/raw/weatherAUS.csv
     outs:
       - data/processed/X_train.csv
       - data/processed/X_test.csv
       - data/processed/y_train.csv
       - data/processed/y_test.csv
+      - data/processed/.gitignore
 
   train:
-    cmd: python model/xgboost_model.py
+    cmd: python src/xgboost_model.py
     deps:
-      - model/xgboost_model.py
+      - src/xgboost_model.py
       - config/config.yaml
       - data/processed/X_train.csv
       - data/processed/X_test.csv
@@ -22,3 +24,4 @@ stages:
     outs:
       - model/xgboost_model.json
       - metrics/metrics.json
+      - metrics/metrics/.gitignore

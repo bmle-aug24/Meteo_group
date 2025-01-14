@@ -1,80 +1,71 @@
 import pytest
 import pandas as pd
-import numpy as np
-# from script import (
-    # get_libelle_graph_temp,
-    # graph_hisplot,
-    # graph_boxplot,
-    # preprocess_wind_data,
-    # analyze_temperature,
-# )
+import os
+from unittest.mock import patch
+from src.preprocess import remove_nan_target, preprocess_data, save_processed_data, load_config  # Mise à jour du chemin
 
-
+# Test data
 @pytest.fixture
-def sample_dataframe():
-    """
-    Fixture pour créer un DataFrame d'exemple pour les tests.
-    """
-    return pd.DataFrame({
-        "Location": ["Canberra", "Canberra", "Ballarat"],
-        "Date": ["2021-01-01", "2021-01-02", "2021-01-03"],
-        "Tempreal": [25.0, 27.5, 24.0],
-        "Tempmean": [24.5, 26.0, 23.0],
-        "WindGustDir": ["N", None, "S"],
-        "WindDir3pm": ["E", "W", "S"],
-        "WindGustSpeed": [40, None, 30],
-        "WindSpeed9am": [10, 15, 20],
-        "WindSpeed3pm": [25, 20, 15],
-    })
+def sample_data():
+    data = {
+        "Date": ["2025-01-01", "2025-01-02", None],
+        "Location": ["Sydney", "Melbourne", None],
+        "Rainfall": [1.2, None, 0.8],
+        "RainTomorrow": ["Yes", "No", None],
+    }
+    return pd.DataFrame(data)
 
 
-def test_get_libelle_graph_temp():
-    """
-    Teste la fonction get_libelle_graph_temp.
-    """
-    result = get_libelle_graph_temp("Canberra")
-    expected = "Températures prélevées à 9h00 dans la station Canberra du 01/11/2011 au 31/01/2012, climat associé est Tempéré"
-    assert result == expected
+def test_remove_nan_target(sample_data):
+    cleaned_data = remove_nan_target(sample_data, "RainTomorrow")
+    assert len(cleaned_data) == 2  # Only two rows remain after removing NaN in the target column
+    assert cleaned_data["RainTomorrow"].isnull().sum() == 0
 
 
-def test_graph_hisplot(sample_dataframe):
-    """
-    Teste si la fonction graph_hisplot retourne une figure matplotlib.
-    """
-    list_col = ["Tempreal", "Tempmean"]
-    list_label = ["Température réelle", "Température moyenne"]
-    fig = graph_hisplot(sample_dataframe, list_col, list_label)
-    assert fig is not None  # Vérifie que la figure est créée
-    assert hasattr(fig, "axes")  # Vérifie que la figure contient des axes
+def test_preprocess_data(sample_data):
+    processed_data = preprocess_data(sample_data, "RainTomorrow")
+    assert "Date" in processed_data.columns
+    assert processed_data["Date"].dtype == pd.Int64Dtype()  # Vérifier le type correct (Int64Dtype, pour gérer les NaN)
+    assert processed_data["Location"].dtype == "int64"  # Vérifier que Location est encodé en int64 # No NaNs remain
 
 
-def test_graph_boxplot(sample_dataframe):
-    """
-    Teste si la fonction graph_boxplot retourne une figure matplotlib.
-    """
-    list_col = ["Tempreal", "Tempmean"]
-    list_label = ["Température réelle", "Température moyenne"]
-    fig = graph_boxplot(sample_dataframe, list_col, list_label)
-    assert fig is not None
-    assert hasattr(fig, "axes")
+@patch("subprocess.run")  # Mise à jour du patch pour subprocess
+def test_save_processed_data(mock_subprocess, tmpdir):
+    # Simulate processed data
+    X_train = pd.DataFrame({"col1": [1, 2, 3]})
+    X_test = pd.DataFrame({"col1": [4, 5]})
+    y_train = pd.Series([1, 0, 1])
+    y_test = pd.Series([0, 1])
+
+    # Temp directory for saving files
+    config = {
+        "data": {"processed_dir": tmpdir.strpath}
+    }
+
+    save_processed_data(X_train, X_test, y_train, y_test, config)
+
+    # Check if files exist
+    assert os.path.exists(os.path.join(tmpdir, "X_train.csv"))
+    assert os.path.exists(os.path.join(tmpdir, "X_test.csv"))
+    assert os.path.exists(os.path.join(tmpdir, "y_train.csv"))
+    assert os.path.exists(os.path.join(tmpdir, "y_test.csv"))
+
+    # Ensure DVC was called
+    assert mock_subprocess.call_count == 4
 
 
-def test_preprocess_wind_data(sample_dataframe):
-    """
-    Teste la fonction preprocess_wind_data.
-    """
-    processed_df = preprocess_wind_data(sample_dataframe)
-    assert "WindDir9am" not in processed_df.columns  # Vérifie la suppression des colonnes
-    assert "WindSpeed9am" not in processed_df.columns
-    assert "WindSpeed3pm" not in processed_df.columns
-    assert not processed_df["WindGustDir"].isnull().any()  # Vérifie le remplissage des valeurs NA
-    assert not processed_df["WindGustSpeed"].isnull().any()
+def test_load_config(tmpdir):
+    yaml_path = tmpdir.join("config.yaml")
+    yaml_path.write(
+        """
+        data:
+          raw_data_path: "data/raw/weather.csv"
+          processed_dir: "data/processed/"
+        model:
+          target_column: "RainTomorrow"
+        """
+    )
+    config = load_config(str(yaml_path))
+    assert config["data"]["raw_data_path"] == "data/raw/weather.csv"
+    assert config["data"]["processed_dir"] == "data/processed/"
 
-
-def test_analyze_temperature(sample_dataframe):
-    """
-    Teste si la fonction analyze_temperature retourne une figure plotly.
-    """
-    fig = analyze_temperature(sample_dataframe, "Canberra")
-    assert fig is not None
-    assert isinstance(fig, go.Figure)  # Vérifie que le résultat est une figure Plotly
