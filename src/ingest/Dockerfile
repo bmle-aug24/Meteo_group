@@ -1,4 +1,6 @@
-FROM python:slim
+FROM python:3.11.8
+
+RUN mkdir /app &&  mkdir /app/data && mkdir /app/data/raw
 
 COPY * /app
 

@@ -4,7 +4,7 @@ URL_DICT = {
     'Cobar': None,
     'CoffsHarbour': None,
     'Moree': None,
-    'Newcastle': "http://www.bom.gov.au/climate/dwo/IDCJDW2098.latest.shtml",
+    'Newcastle': None, #"http://www.bom.gov.au/climate/dwo/IDCJDW2098.latest.shtml",
     'NorahHead': None,
     'NorfolkIsland': "http://www.bom.gov.au/climate/dwo/IDCJDW2100.latest.shtml",
     'Penrith': "http://www.bom.gov.au/climate/dwo/IDCJDW2111.latest.shtml",
