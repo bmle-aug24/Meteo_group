@@ -24,6 +24,7 @@ def format_and_add_new_data(df, raw_data):
     updated_df  = updated_df.drop_duplicates(subset=['Date', 'Location'], keep='last') #SVE: Drop duplicates
     updated_df = updated_df.sort_values(by=['Location', 'Date']) #SVE: Sort by date
     updated_df = updated_df.reset_index(drop=True) #SVE: Reset index
+    updated_df = updated_df.drop_duplicates(keep='last') #SVE: Drop duplicates
     
     return updated_df
 
@@ -100,7 +101,7 @@ def main():
 
     # Sauvegarder les modifications
     #save_dataframe(df, raw_data_file_path)
-    save_dataframe(df, "data/raw/weatherAUS.csv")
+    save_dataframe(df, "data/raw/weatherAUS_Test.csv")
 
 if __name__ == "__main__":
     main()
