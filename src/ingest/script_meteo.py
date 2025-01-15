@@ -2,7 +2,6 @@ import pandas as pd
 from datetime import timedelta
 from ingest_data import get_day_data  # Importation de la fonction pour récupérer les données via l'API
 
-
 # Fonction pour formater et ajouter de nouvelles données au DataFrame
 def format_and_add_new_data(df, raw_data):
     """
@@ -24,7 +23,6 @@ def format_and_add_new_data(df, raw_data):
     updated_df  = updated_df.drop_duplicates(subset=['Date', 'Location'], keep='last') #SVE: Drop duplicates
     updated_df = updated_df.sort_values(by=['Location', 'Date']) #SVE: Sort by date
     updated_df = updated_df.reset_index(drop=True) #SVE: Reset index
-    updated_df = updated_df.drop_duplicates(keep='last') #SVE: Drop duplicates
     
     return updated_df
 
@@ -92,7 +90,6 @@ def main():
             df = format_and_add_new_data(df, data_location) #SVE: Changed to the same df, if not, it will not collect the data of all the locations, only the last
     
     print("Données mises à jour :")
-    print(df.tail())  # Afficher les dernières lignes pour vérifier
 
     # Exemple de mise à jour de la colonne RainTomorrow
     #new_rain_data = {"Date": "2025-01-08", "RainTomorrow": "No"} #SVE: Useless
@@ -101,7 +98,7 @@ def main():
 
     # Sauvegarder les modifications
     #save_dataframe(df, raw_data_file_path)
-    save_dataframe(df, "data/raw/weatherAUS_Test.csv")
+    save_dataframe(df, raw_data_file_path)
 
 if __name__ == "__main__":
     main()
