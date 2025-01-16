@@ -24,12 +24,21 @@ def ingest_data(location):
 
     if r.status_code == 200:
         try:
+            print(f"Loading {location}", end="\r")
             soup = bs(r.content, 'html5lib')
             table = soup.find("tbody")
             row = table.find_all("tr")[-2]
             values_row = [value.text for value in row]
         except AttributeError:
             return None
+        #Indexer for 'calm' value
+        
+        indexer1 = 0
+        indexer2 = 0
+        if values_row[13].lower() == 'calm':
+            indexer1 = 1
+        if values_row[19-indexer1].lower() == 'calm':
+            indexer2 = 1
 
         date = datetime.today().strftime('%Y-%m-') + row.find("th", class_="rb").text.zfill(2)
         location = location
@@ -40,18 +49,33 @@ def ingest_data(location):
         sunshine = check_none_fill(values_row[6], float_=True)
         windgustdir = check_none_fill(values_row[7])
         windgustspeed = check_none_fill(values_row[8], float_=True)
-        winddir9am = check_none_fill(values_row[13])
-        winddir3pm = check_none_fill(values_row[19])
-        windspeed9am = check_none_fill(values_row[14], float_=True)
-        windspeed3pm = check_none_fill(values_row[20], float_=True)
-        humidity9am = check_none_fill(values_row[11], float_=True)
-        humidity3pm = check_none_fill(values_row[17], float_=True)
-        pressure9am = check_none_fill(values_row[15], float_=True)
-        pressure3pm = check_none_fill(values_row[21], float_=True)
-        cloud9am = check_none_fill(values_row[12], float_=True)
-        cloud3pm = check_none_fill(values_row[18], float_=True)
         temp9am = check_none_fill(values_row[10], float_=True)
-        temp3pm = check_none_fill(values_row[16], float_=True)
+        humidity9am = check_none_fill(values_row[11], float_=True)
+        cloud9am = check_none_fill(values_row[12], float_=True)
+        #From 13 and 14
+        indexer1 = 0
+        if values_row[13].lower() == 'calm':
+            indexer1 = 1 
+            winddir9am = np.nan
+            windspeed9am = 0
+        else:
+            winddir9am = check_none_fill(values_row[13], float_=False)
+            windspeed9am = check_none_fill(values_row[14], float_=True)
+        #From 15 to 18
+        pressure9am = check_none_fill(values_row[15-indexer1], float_=True)
+        temp3pm = check_none_fill(values_row[16-indexer1], float_=True)
+        humidity3pm = check_none_fill(values_row[17-indexer1], float_=True)
+        cloud3pm = check_none_fill(values_row[18-indexer1], float_=True)
+        #For 19 and 20
+        indexer2 = 0
+        if values_row[19-indexer1].lower() == 'calm':
+            indexer2 = 1
+            winddir3pm = np.nan
+            windspeed3pm = 0
+        else:
+            winddir3pm = check_none_fill(values_row[19-indexer1-indexer2])
+            windspeed3pm = check_none_fill(values_row[20-indexer1-indexer2], float_=True)
+        pressure3pm = check_none_fill(values_row[21-indexer1-indexer2], float_=True)
         raintoday = 'Yes' if rainfall >=1 else 'No'
 
         data = {

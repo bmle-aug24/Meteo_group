@@ -1,7 +1,7 @@
 from airflow import DAG
-from airflow.utils.dates import days_ago
-from airflow.operators.docker_operator import DockerOperator
-from docker.types import Mount
+from airflow.utils.dates import days_ago 
+from airflow.operators.docker_operator import DockerOperator 
+from docker.types import Mount 
 
 with DAG(
     dag_id='Ingestion',
