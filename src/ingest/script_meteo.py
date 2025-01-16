@@ -38,14 +38,7 @@ def update_rain_tomorrow(df):#, new_data):
     Returns:
         pd.DataFrame: DataFrame mis à jour.
     """
-    # Vérifier si la date existe dans le DataFrame
-    #mask = df["Date"] == new_data["Date"]
-    #if mask.any():
-    #    # Mettre à jour la colonne RainTomorrow pour cette date
-    #    df.loc[mask, "RainTomorrow"] = new_data["RainTomorrow"]
-    #    print(f"RainTomorrow mis à jour pour la date {new_data['Date']}.")
-    #else:
-    #    print(f"La date {new_data['Date']} n'existe pas dans le DataFrame.")
+    # Convertir la colonne Date en datetime
     df['Date'] = pd.to_datetime(df['Date'])
     for location in df['Location'].unique():
         df_temp = df[df['Location'] == location].sort_values(by='Date')
@@ -80,8 +73,6 @@ def main():
     # Récupérer les données via l'API
     data = get_day_data()
 
-    #raw_data = data[0]['Location']  # Exemple d'accès à une location spécifique, ajuster si nécessaire SVE: Biensur il faut le modifier
-
     # Ajout des nouvelles données au DataFrame
     print("Ajout des nouvelles données au DataFrame...")
     for data_location in data:
@@ -92,12 +83,10 @@ def main():
     print("Données mises à jour :")
 
     # Exemple de mise à jour de la colonne RainTomorrow
-    #new_rain_data = {"Date": "2025-01-08", "RainTomorrow": "No"} #SVE: Useless
     print("\nMise à jour de RainTomorrow...")
-    df = update_rain_tomorrow(df)#, new_rain_data)
+    df = update_rain_tomorrow(df)
 
     # Sauvegarder les modifications
-    #save_dataframe(df, raw_data_file_path)
     save_dataframe(df, raw_data_file_path)
 
 if __name__ == "__main__":
