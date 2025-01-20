@@ -5,3 +5,5 @@ env/
 Ingestion.ipynb
 src/airflow/logs/*
 !src/airflow/logs/
+mlruns/
+mlruns_1/
