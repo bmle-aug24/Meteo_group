@@ -169,6 +169,16 @@ services:
     #container_name: ingestion
     volumes:
       - data_raw:/app/data/raw
+  
+  mlflow:
+    build:
+      context: src/mlflow
+      dockerfile: Dockerfile
+    image: mlflow_service
+    volumes:
+      - mlruns:/app/mlruns
+    ports:
+      - 8100:8100
 
 volumes:
   postgres-db-volume:
@@ -179,4 +189,11 @@ volumes:
       type: none
       o: bind
       device: ./data/raw
+  
+  mlruns:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./mlruns
 
