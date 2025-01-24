@@ -50,29 +50,31 @@ x-airflow-common: &airflow-common
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ""
-    #AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
-    #AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
     AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.basic_auth"
     AIRFLOW__SMTP__SMTP_HOST: "smtp.gmail.com"
     AIRFLOW__SMTP__SMTP_PORT: 587
-    AIRFLOW__SMTP__SMTP_USER: "de.airflow@gmail.com"
+    AIRFLOW__SMTP__SMTP_USER: "meteo.bmle.24@gmail.com"
     AIRFLOW__SMTP__SMTP_PASSWORD: "cfsrvkongsobheta"
-    AIRFLOW__SMTP__SMTP_MAIL_FROM: "de.airflow@gmail.com"
+    AIRFLOW__SMTP__SMTP_MAIL_FROM: "meteo.bmle.24@gmail.com"
     AIRFLOW__API__ENABLE_EXPERIMENTAL_API: "true" #TestAPI
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker} # librairie supplémentaire
-    #_PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- pymongo}
+  
   volumes:
     - ./src/airflow/dags:/opt/airflow/dags
-    - ./src/airflow/logs:/opt/airflow/logs
+    - ./logs/airflow/:/opt/airflow/logs
     - ./src/airflow/plugins:/opt/airflow/plugins
     - /var/run/docker.sock:/var/run/docker.sock # volume supplémentaire
   
-  #user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     redis:
       condition: service_healthy
     postgres:
       condition: service_healthy
+  networks:
+    - app_network
+    - default
 
 services:
 #Airflow services
@@ -180,9 +182,10 @@ services:
       dockerfile: Dockerfile
     image: ingestion
     depends_on:
-      - mlflow
+      airflow-init:
+        condition: service_completed_successfully
     volumes:
-      - data_raw:/app/data/raw
+      - ./data/raw:/app/data/raw
   
   mlflow:
     build:
@@ -190,8 +193,7 @@ services:
       dockerfile: Dockerfile
     image: mlflow_service
     volumes:
-      - mlruns:/app/mlruns
-      - mlartifact:/app/mlartifacts
+      - ./mlflow:/app
     ports:
       - 8100:8100
     networks:
@@ -199,17 +201,39 @@ services:
     depends_on:
       airflow-init:
         condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8100/"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
 
+  train_service:
+    build: 
+      context: src/train
+      dockerfile: Dockerfile
+    image: train_service
+    volumes:
+      - ./data/raw:/app/data/raw
+      - ./data/processed:/app/data/processed
+      - ./config:/app/config
+    networks:
+      - app_network
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    
   api_prediction:
     build:
       context: src/api_model
       dockerfile: Dockerfile
     image: api_prediction
     volumes:
-      - model:/app/model
-      - mlartifact:/app/mlartifacts
+      - ./mlflow:/app/model
+      - ./mlflow/mlartifact:/app/mlartifacts
     depends_on:
-      - mlflow
+      train_service:
+        condition: service_completed_successfully
     ports:
       - 8000:8000
     networks:
@@ -217,34 +241,6 @@ services:
 
 volumes:
   postgres-db-volume:
-
-  data_raw:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./data/raw
-  
-  mlruns:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./mlruns
-  
-  mlartifact:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./mlartifacts
-
-  model:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./model
 
 networks:
   app_network:

@@ -8,7 +8,7 @@ api = FastAPI(title="Model API")
 mlflow.set_tracking_uri("http://meteo_group-mlflow-1:8100")
 
 print("Loading model...")
-model = mlflow.xgboost.load_model("models:/model@model_last", dst_path="model/")
+model = mlflow.xgboost.load_model("models:/model@model_last", dst_path="mlflow/")
 
 @api.get('/check')
 def verify_status():
@@ -46,14 +46,18 @@ async def reload_model(model_data: ModelData):
     if not model_data.version and not model_data.alias:
         print("No version or alias provided. Using last version.")
         model_data.alias = "model_last"
-
+    
+    print("Loading model...")
     try:
         if model_data.alias:
             model = mlflow.xgboost.load_model(f"models:/{model_data.model_name}@{model_data.alias}",
-                                             dst_path="model")
+                                             dst_path="mlflow/")
+            print(f"Model : '{model_data}' reloaded.")
         else:
             model = mlflow.xgboost.load_model(f"models:/{model_data.model_name}/{model_data.version}",
-                                             dst_path="model")
+                                             dst_path="mlflow/")
+            print(f"Model : '{model_data}' reloaded.")
         return {"message": "Model : '{model_data}' reloaded."}
     except mlflow.exceptions.RestException:
+        print(f"Model: '{model_data}' not found.")
         raise HTTPException(status_code=404, detail=f"Model: '{model_data}' not found.")

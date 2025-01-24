@@ -1,5 +1,3 @@
-# train.py
-
 import os
 import yaml
 import pandas as pd
@@ -9,6 +7,7 @@ import mlflow.xgboost
 import xgboost as xgb
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from mlflow.tracking import MlflowClient  # <-- pour le Model Registry
 
 def load_config(config_path="config/config.yaml"):
     """
@@ -36,7 +35,7 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, config):
         print(f"Expérience créée : {experiment_name}")
 
     # 3) On démarre un nouveau run MLflow
-    with mlflow.start_run():
+    with mlflow.start_run() as run:
         # a) Je récupère les hyperparamètres XGBoost depuis la config
         xgb_params = config["model"]["xgboost"]
 
@@ -70,47 +69,35 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, config):
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
         model.save_model(model_path)
 
-        # h) Je loggue le modèle XGBoost dans MLflow (pour le retrouver plus tard via l'UI MLflow)
+        # h) Je loggue le modèle XGBoost dans MLflow (pour le retrouver via l’UI MLflow)
+        artifact_path = "xgboost_model"
         mlflow.xgboost.log_model(
             xgb_model=model,
-            artifact_path="xgboost_model",
+            artifact_path=artifact_path,
             input_example=X_test.iloc[:1]
+        )
+
+        # (Nouveau) Enregistrement dans la Model Registry sous le nom "model" + alias "model_last"
+        run_id = run.info.run_id
+        model_uri = f"runs:/{run_id}/{artifact_path}"
+
+        # 1) On enregistre le modèle dans le registry
+        registered_model = mlflow.register_model(
+            model_uri=model_uri,
+            name="model"  # Sergio souhaitait le nom "model"
+        )
+
+        # 2) On définit l’alias "model_last" sur cette nouvelle version
+        client = MlflowClient()
+        client.set_registered_model_alias(
+            name="model",
+            alias="model_last",
+            version=registered_model.version
         )
 
         print(f"Métriques enregistrées dans MLflow: {metrics}")
         print(f"Modèle sauvegardé à l'emplacement : {model_path}")
-
-def register_model(model_uri, model_name, tags=None):
-    """
-    Register a model and set its tags
-
-    Args:
-        model_uri: URI of the model to register
-        model_name: Name to register the model under
-        tags: Dictionary of tags to set
-    """
-    print(f"\nRegistering model from: {model_uri}")
-    print(f"Model name: {model_name}")
-
-    client = mlflow.tracking.MlflowClient()
-
-    try:
-        # Register the model
-        model_details = mlflow.register_model(model_uri, model_name)
-        print(f"Model registered with version: {model_details.version}")
-
-        # Set tags if provided
-        if tags:
-            for key, value in tags.items():
-                client.set_registered_model_tag(model_name, key, value)
-            print("Tags set successfully")
-
-        return model_details
-
-    except Exception as e:
-        print(f"Failed to register model")
-        print(f"Error: {str(e)}")
-        raise
+        print(f"Registered model: 'model' (version {registered_model.version}) avec alias 'model_last'")
 
 def main():
     """

@@ -16,5 +16,5 @@ output:
   model_path: "model/xgboost_model.json"
   metrics_path: "metrics/metrics.json"
 mlflow:
-  tracking_uri: "http://localhost:5000"
+  tracking_uri: "http://meteo_group-mlflow-1:8100" #"http://localhost:5000"
   experiment_name: "weather_prediction"
