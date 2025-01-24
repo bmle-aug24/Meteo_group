@@ -60,7 +60,7 @@ def save_dataframe(df, file_path):
         file_path (str): Chemin du fichier CSV.
     """
     df.to_csv(file_path, index=False)
-    print(f"Fichier {file_path} mis à jour avec succès.")
+    print(f"File {file_path} saved succesfully.")
 
 # TEST DES FONCTIONS
 def main():
@@ -71,19 +71,20 @@ def main():
     df = pd.read_csv(raw_data_file_path)
     
     # Récupérer les données via l'API
+    print("Getting data of the day...")
     data = get_day_data()
 
     # Ajout des nouvelles données au DataFrame
-    print("Ajout des nouvelles données au DataFrame...")
+    print("Adding new rows to DataFrame...")
     for data_location in data:
         #print(data_location)
         if data_location is not None:
             df = format_and_add_new_data(df, data_location) #SVE: Changed to the same df, if not, it will not collect the data of all the locations, only the last
     
-    print("Données mises à jour :")
+    print("Data successfully updated.")
 
     # Exemple de mise à jour de la colonne RainTomorrow
-    print("\nMise à jour de RainTomorrow...")
+    print("Updating RainTomorrow...")
     df = update_rain_tomorrow(df)
 
     # Sauvegarder les modifications

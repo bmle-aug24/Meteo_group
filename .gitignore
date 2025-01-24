@@ -7,3 +7,4 @@ src/airflow/logs/*
 !src/airflow/logs/
 mlruns/
 mlruns_1/
+.env
