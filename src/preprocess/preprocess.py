@@ -2,67 +2,44 @@ import pandas as pd
 import yaml
 from sklearn.model_selection import train_test_split
 import os
-import subprocess
 
 
 def load_config(yaml_path):
-    """
-    Charger la configuration depuis un fichier YAML.
-    """
     with open(yaml_path, "r") as file:
         return yaml.safe_load(file)
 
 
 def remove_nan_target(df, target_column):
-    """
-    Supprime les lignes où la colonne cible contient des NaN.
-    """
-    cleaned_data = df.dropna(subset=[target_column])
+    cleaned_data = df.dropna(subset=[target_column]).copy()
     print(f"Lignes supprimées (NaN dans cible) : {len(df) - len(cleaned_data)}")
     return cleaned_data
 
 
 def preprocess_data(df, target_column):
-    """
-    Prétraiter les données : gérer les NaN, encoder les colonnes catégoriques, et convertir les dates.
-    """
-    # Supprimer les lignes où la cible est NaN
     df = remove_nan_target(df, target_column)
-
-    # Gestion des NaN dans les colonnes numériques
     numerical_columns = df.select_dtypes(include=["float", "int"]).columns
-    df.loc[:, numerical_columns] = df[numerical_columns].fillna(df[numerical_columns].mean())
+    df[numerical_columns] = df[numerical_columns].fillna(df[numerical_columns].mean())
 
     # Gestion des NaN dans les colonnes catégoriques
     categorical_columns = df.select_dtypes(include=["object"]).columns
-    df.loc[:, categorical_columns] = df[categorical_columns].fillna("Inconnu")
+    df[categorical_columns] = df[categorical_columns].fillna("Inconnu")
 
     # Encodage des colonnes catégoriques
     for col in categorical_columns:
-        df.loc[:, col] = df[col].astype("category").cat.codes
-
-        # S'assurer que le type est bien 'int64' après encodage
-        df.loc[:, col] = df[col].astype("int64")
+        df[col] = df[col].astype("category").cat.codes.astype("int64")
 
     # Conversion de la colonne Date
     if "Date" in df.columns:
-        # df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convertir en datetime, erreurs deviennent NaT
-        # df['Date'] = df['Date'].apply(lambda x: x.toordinal() if pd.notnull(x) else pd.NA)  # Convertir en ordinale
-        # df['Date'] = df['Date'].astype('Int64')  # Utilisation de 'Int64' pour permettre NaN avec des entiers
-        df.loc[:, 'Date'] = pd.to_datetime(df['Date'], errors='coerce')
-        df.loc[:, 'Date'] = df['Date'].apply(lambda x: x.toordinal() if pd.notnull(x) else pd.NA)
-        df.loc[:, 'Date'] = df['Date'].astype('Int64')
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+        df["Date"] = df["Date"].apply(lambda x: x.toordinal() if pd.notnull(x) else pd.NA)
+        df["Date"] = df["Date"].astype("Int64")
 
     return df
 
 
-# Sauvegarder les ensembles de données traités
 def save_processed_data(X_train, X_test, y_train, y_test, config):
-    """
-    Sauvegarder les ensembles de données traités.
-    """
-    processed_dir = config["data"]["processed_dir"]  # Vérifiez le chemin
-    print(f"Processed dir: {processed_dir}")  # Afficher le chemin
+    processed_dir = config["data"]["processed_dir"]
+    print(f"Processed dir: {processed_dir}")
     os.makedirs(processed_dir, exist_ok=True)
 
     # Sauvegarder les fichiers
@@ -71,7 +48,6 @@ def save_processed_data(X_train, X_test, y_train, y_test, config):
     y_train.to_csv(os.path.join(processed_dir, "y_train.csv"), index=False)
     y_test.to_csv(os.path.join(processed_dir, "y_test.csv"), index=False)
     print(f"Files saved in {processed_dir}")
-
 
 
 if __name__ == "__main__":
@@ -87,8 +63,8 @@ if __name__ == "__main__":
     df = preprocess_data(df, target_column)
 
     # Séparer les caractéristiques (X) et la cible (y)
-    X = df.drop(columns=[target_column])
-    y = df[target_column]
+    X = df.drop(columns=[target_column]).copy()
+    y = df[target_column].copy()
 
     # Diviser en ensembles d'entraînement et de test
     X_train, X_test, y_train, y_test = train_test_split(

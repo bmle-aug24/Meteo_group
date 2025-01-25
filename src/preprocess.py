@@ -42,37 +42,41 @@ def preprocess_data(df, target_column):
         df.loc[:, col] = df[col].astype("category").cat.codes
 
         # S'assurer que le type est bien 'int64' après encodage
-        df[col] = df[col].astype("int64")
+        df.loc[:, col] = df[col].astype("int64")
 
     # Conversion de la colonne Date
     if "Date" in df.columns:
-        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convertir en datetime, erreurs deviennent NaT
-        df['Date'] = df['Date'].apply(lambda x: x.toordinal() if pd.notnull(x) else pd.NA)  # Convertir en ordinale
-        df['Date'] = df['Date'].astype('Int64')  # Utilisation de 'Int64' pour permettre NaN avec des entiers
+        # df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convertir en datetime, erreurs deviennent NaT
+        # df['Date'] = df['Date'].apply(lambda x: x.toordinal() if pd.notnull(x) else pd.NA)  # Convertir en ordinale
+        # df['Date'] = df['Date'].astype('Int64')  # Utilisation de 'Int64' pour permettre NaN avec des entiers
+        df.loc[:, 'Date'] = pd.to_datetime(df['Date'], errors='coerce')
+        df.loc[:, 'Date'] = df['Date'].apply(lambda x: x.toordinal() if pd.notnull(x) else pd.NA)
+        df.loc[:, 'Date'] = df['Date'].astype('Int64')
 
     return df
 
 
+# Sauvegarder les ensembles de données traités
 def save_processed_data(X_train, X_test, y_train, y_test, config):
     """
-    Sauvegarder les ensembles de données traités et les suivre avec DVC.
+    Sauvegarder les ensembles de données traités.
     """
-    processed_dir = config["data"]["processed_dir"]
+    processed_dir = config["data"]["processed_dir"]  # Vérifiez le chemin
+    print(f"Processed dir: {processed_dir}")  # Afficher le chemin
     os.makedirs(processed_dir, exist_ok=True)
 
+    # Sauvegarder les fichiers
     X_train.to_csv(os.path.join(processed_dir, "X_train.csv"), index=False)
     X_test.to_csv(os.path.join(processed_dir, "X_test.csv"), index=False)
     y_train.to_csv(os.path.join(processed_dir, "y_train.csv"), index=False)
     y_test.to_csv(os.path.join(processed_dir, "y_test.csv"), index=False)
+    print(f"Files saved in {processed_dir}")
 
-    # Ajouter les fichiers à DVC pour le suivi
-    for file in os.listdir(processed_dir):
-        subprocess.run(["dvc", "add", os.path.join(processed_dir, file)])
 
 
 if __name__ == "__main__":
     # Charger la configuration
-    config = load_config("config/config.yaml")
+    config = load_config("src/config.yaml")
 
     # Charger les données brutes
     raw_data_path = config["data"]["raw_data_path"]
@@ -93,5 +97,7 @@ if __name__ == "__main__":
         random_state=config["model"]["random_state"]
     )
 
-    # Sauvegarder
+    # Sauvegarder les ensembles traités
+    print("Calling save_processed_data...")
     save_processed_data(X_train, X_test, y_train, y_test, config)
+    print("save_processed_data executed")
