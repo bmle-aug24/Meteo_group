@@ -1,0 +1,20 @@
+data:
+  raw_data_path: "/app/data/raw/weatherAUS.csv"
+  processed_dir: "/app/data/processed"
+model:
+  target_column: "RainTomorrow"
+  test_size: 0.2
+  random_state: 42
+  xgboost:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    eval_metric: "logloss"
+output:
+  model_path: "/app/model/xgboost_model.json"
+  metrics_path: "/app/metrics/metrics.json"
+mlflow:
+  tracking_uri: "http://localhost:5000"
+  experiment_name: "weather_prediction"
