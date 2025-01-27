@@ -1,3 +1,5 @@
+venv_secu/
+env_meteo/
 venv/
 /venv
 env/
@@ -8,4 +10,4 @@ src/airflow/logs/*
 mlruns/
 mlruns_1/
 .env
-venv_secu/
+
