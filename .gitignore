@@ -13,3 +13,4 @@ mlflow/mlruns/
 logs/airflow/
 data/
 
+src/Gateway/venv_se/
