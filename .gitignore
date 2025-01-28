@@ -7,7 +7,9 @@ env/
 Ingestion.ipynb
 src/airflow/logs/*
 !src/airflow/logs/
-mlruns/
-mlruns_1/
 .env
+mlflow/mlartifacts/
+mlflow/mlruns/
+logs/airflow/
+data/
 

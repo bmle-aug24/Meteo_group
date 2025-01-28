@@ -14,6 +14,9 @@ with DAG(
     },
     catchup=False
 ) as dag:
+    preprocess_task = PythonOperator(task_id='start_preprocess_container',
+                                     python_callable=start_existing_container,
+                                     op_kwargs={'container_name': 'meteo_group-preprocessing-1'})
     training_task = PythonOperator(task_id='start_training_container',
                                     python_callable=start_existing_container,
                                     op_kwargs={'container_name': 'meteo_group-train_service-1'})
@@ -22,4 +25,4 @@ with DAG(
                                        python_callable=load_model_script,
                                        op_kwargs={'model_name': 'model', 'alias': 'model_last'})
     
-    training_task >> update_model_task
+    preprocess_task >> training_task >> update_model_task
