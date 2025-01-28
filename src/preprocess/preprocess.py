@@ -52,7 +52,7 @@ def save_processed_data(X_train, X_test, y_train, y_test, config):
 
 if __name__ == "__main__":
     # Charger la configuration
-    config = load_config("src/preprocess/config.yaml")
+    config = load_config("/app/config/config.yaml")
 
     # Charger les données brutes
     raw_data_path = config["data"]["raw_data_path"]
