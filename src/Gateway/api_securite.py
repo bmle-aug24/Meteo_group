@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from typing import List
 from jose import JWTError, jwt
 import requests
+from requests.auth import HTTPBasicAuth
+
 
 # Clé secrète et algorithme pour JWT
 SECRET_KEY = "96a0c910f342e9772c403c7db9de6a21036d12bb51cc3de2ffabdf143419eeb3"
@@ -25,7 +27,7 @@ users_db = {
 
 # Configuration FastAPI
 app = FastAPI()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8000/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8001/login")
 
 # Modèle pour les utilisateurs
 class User(BaseModel):
@@ -70,8 +72,15 @@ def predict(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=403, detail="Permission refusée")
     
     # Appel au microservice prédiction
-    response = requests.post("http://train_service:8002/train", headers={"Authorization": f"Bearer {token}"})
-    return response.json()
+
+    url = "http://localhost:8080/api/v1/dags/predict_dag/dagRuns"
+    response = requests.post(url, json={}, auth=HTTPBasicAuth('airflow', 'airflow'))
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return {"message": "DAG de prédiction déclenché avec succès", "details": response.json()}
+
 
 # Endpoint pour entraînement (accessible uniquement aux administrateurs)
 @app.post("/train")
@@ -81,7 +90,11 @@ def train(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=403, detail="Permission refusée")
     
     # Appel au microservice entraînement
-    response = requests.get("http://api_prediction:8000/predict", headers={"Authorization": f"Bearer {token}"})
-    
-    return response.json()
+    url = "http://localhost:8080/api/v1/dags/train_dag/dagRuns"
+    response = requests.post(url, json={}, auth=HTTPBasicAuth('airflow', 'airflow'))
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return {"message": "DAG d'entraînement déclenché avec succès", "details": response.json()}
 

@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Configuration de l'URL de l'API Gateway
-API_GATEWAY_URL = "http://localhost:8000"
+API_GATEWAY_URL = "http://localhost:8001"
 
 # Variables de session pour stocker l'état de l'utilisateur
 if "is_authenticated" not in st.session_state:
