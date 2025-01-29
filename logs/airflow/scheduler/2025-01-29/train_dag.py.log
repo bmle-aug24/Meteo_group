@@ -3593,3 +3593,31 @@
 [2025-01-29T23:18:49.990+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:18:49.989+0000] {dag.py:3036} INFO - Sync 1 DAGs
 [2025-01-29T23:18:50.014+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:18:50.013+0000] {dag.py:3823} INFO - Setting next_dagrun for Train to 2025-02-02 00:00:00+00:00, run_after=2025-02-09 00:00:00+00:00
 [2025-01-29T23:18:50.039+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/train_dag.py took 0.193 seconds
+[2025-01-29T23:19:20.804+0000] {processor.py:161} INFO - Started process (PID=2719) to work on /opt/airflow/dags/train_dag.py
+[2025-01-29T23:19:20.807+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/train_dag.py for tasks to queue
+[2025-01-29T23:19:20.813+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:19:20.813+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:19:20.997+0000] {processor.py:840} INFO - DAG(s) 'Train' retrieved from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:19:21.080+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:19:21.079+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-01-29T23:19:21.129+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:19:21.128+0000] {dag.py:3823} INFO - Setting next_dagrun for Train to 2025-02-02 00:00:00+00:00, run_after=2025-02-09 00:00:00+00:00
+[2025-01-29T23:19:21.170+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/train_dag.py took 0.376 seconds
+[2025-01-29T23:19:51.395+0000] {processor.py:161} INFO - Started process (PID=2745) to work on /opt/airflow/dags/train_dag.py
+[2025-01-29T23:19:51.397+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/train_dag.py for tasks to queue
+[2025-01-29T23:19:51.402+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:19:51.401+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:19:51.520+0000] {processor.py:840} INFO - DAG(s) 'Train' retrieved from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:19:51.562+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:19:51.561+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-01-29T23:19:51.600+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:19:51.600+0000] {dag.py:3823} INFO - Setting next_dagrun for Train to 2025-02-02 00:00:00+00:00, run_after=2025-02-09 00:00:00+00:00
+[2025-01-29T23:19:51.629+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/train_dag.py took 0.241 seconds
+[2025-01-29T23:20:21.999+0000] {processor.py:161} INFO - Started process (PID=2764) to work on /opt/airflow/dags/train_dag.py
+[2025-01-29T23:20:22.001+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/train_dag.py for tasks to queue
+[2025-01-29T23:20:22.004+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:20:22.004+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:20:22.164+0000] {processor.py:840} INFO - DAG(s) 'Train' retrieved from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:20:22.201+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:20:22.201+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-01-29T23:20:22.247+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:20:22.246+0000] {dag.py:3823} INFO - Setting next_dagrun for Train to 2025-02-02 00:00:00+00:00, run_after=2025-02-09 00:00:00+00:00
+[2025-01-29T23:20:22.299+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/train_dag.py took 0.304 seconds
+[2025-01-29T23:20:52.449+0000] {processor.py:161} INFO - Started process (PID=2783) to work on /opt/airflow/dags/train_dag.py
+[2025-01-29T23:20:52.454+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/train_dag.py for tasks to queue
+[2025-01-29T23:20:52.458+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:20:52.458+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:20:52.576+0000] {processor.py:840} INFO - DAG(s) 'Train' retrieved from /opt/airflow/dags/train_dag.py
+[2025-01-29T23:20:52.618+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:20:52.618+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-01-29T23:20:52.660+0000] {logging_mixin.py:188} INFO - [2025-01-29T23:20:52.660+0000] {dag.py:3823} INFO - Setting next_dagrun for Train to 2025-02-02 00:00:00+00:00, run_after=2025-02-09 00:00:00+00:00
+[2025-01-29T23:20:52.700+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/train_dag.py took 0.263 seconds
