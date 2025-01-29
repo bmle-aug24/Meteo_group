@@ -1,10 +1,36 @@
-venv/
+
+# Ignorer les environnements virtuels
 /venv
+venv/
 env/
-**/__pycache__/
+.venv/
+__pycache__/
+
+# Fichiers temporaires de Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb~
 Ingestion.ipynb
+
+# Ignorer les fichiers de log
+logs/
 src/airflow/logs/*
 !src/airflow/logs/
+*.log
+
+# Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
 mlruns/
 mlruns_1/
+mlflow/mlartifacts/
+
+# Ignorer les fichiers de configuration sensibles
 .env
+config.yaml
+*.secret
+*.key
+
+# Ignorer les fichiers CSV (données brutes)
+data/raw/
+*.csv
+
+# Docker
+docker-compose.override.yml
