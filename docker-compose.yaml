@@ -57,14 +57,14 @@ x-airflow-common: &airflow-common
     AIRFLOW__SMTP__SMTP_USER: "meteo.bmle.24@gmail.com"
     AIRFLOW__SMTP__SMTP_PASSWORD: "cfsrvkongsobheta"
     AIRFLOW__SMTP__SMTP_MAIL_FROM: "meteo.bmle.24@gmail.com"
-    AIRFLOW__API__ENABLE_EXPERIMENTAL_API: "true" #TestAPI
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker} # librairie supplémentaire
+    AIRFLOW__API__ENABLE_EXPERIMENTAL_API: "true"
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker} 
   
   volumes:
     - ./src/airflow/dags:/opt/airflow/dags
     - ./logs/airflow/:/opt/airflow/logs
     - ./src/airflow/plugins:/opt/airflow/plugins
-    - /var/run/docker.sock:/var/run/docker.sock # volume supplémentaire
+    - /var/run/docker.sock:/var/run/docker.sock 
   
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
@@ -77,7 +77,6 @@ x-airflow-common: &airflow-common
     - default
 
 services:
-#Airflow services
   postgres:
     image: postgres:13
     environment:
@@ -118,7 +117,10 @@ services:
       airflow-init:
         condition: service_completed_successfully
     volumes:
-      - ./data:/opt/airflow/data 
+      - ./src/airflow/dags:/opt/airflow/dags 
+      - ./logs/airflow/:/opt/airflow/logs
+      - ./src/airflow/plugins:/opt/airflow/plugins
+      - ./data:/opt/airflow/data
 
   airflow-scheduler:
     <<: *airflow-common
@@ -137,6 +139,9 @@ services:
       airflow-init:
         condition: service_completed_successfully
     volumes:
+      - ./src/airflow/dags:/opt/airflow/dags
+      - ./logs/airflow/:/opt/airflow/logs
+      - ./src/airflow/plugins:/opt/airflow/plugins
       - ./data:/opt/airflow/data 
 
   airflow-worker:
@@ -154,7 +159,10 @@ services:
       airflow-init:
         condition: service_completed_successfully
     volumes:
-      - ./data:/opt/airflow/data 
+      - ./src/airflow/dags:/opt/airflow/dags 
+      - ./logs/airflow/:/opt/airflow/logs
+      - ./src/airflow/plugins:/opt/airflow/plugins
+      - ./data:/opt/airflow/data
 
   airflow-init:
     <<: *airflow-common
@@ -181,7 +189,6 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-#Services
   ingestion:
     build:
       context: src/ingest
@@ -191,7 +198,8 @@ services:
       airflow-init:
         condition: service_completed_successfully
     volumes:
-      - ./data/raw:/app/data/raw
+      - ./data:/app/data   # Correction : accès direct à data
+      - ./config:/app/config   # Correction : accès direct à config
   
   mlflow:
     build:
@@ -220,8 +228,7 @@ services:
       dockerfile: Dockerfile
     image: train_service
     volumes:
-      - ./data/raw:/app/data/raw
-      - ./data/processed:/app/data/processed
+      - ./data:/app/data
       - ./config:/app/config
     networks:
       - app_network
@@ -235,14 +242,15 @@ services:
       dockerfile: Dockerfile
     image: api_prediction
     volumes:
+      - ./data:/app/data
+      - ./config:/app/config
       - ./mlflow:/app/model
       - ./mlflow/mlartifact:/app/mlartifacts
-      - ./data:/app/data 
     depends_on:
       train_service:
         condition: service_completed_successfully
     ports:
-      - "8101:8000"  # Externe : 8101, Interne : 8000
+      - "8101:8000"
     networks:
       - app_network
   
@@ -253,6 +261,7 @@ services:
     image: monitoring_service
     volumes:
       - ./data:/app/data
+      - ./config:/app/config
       - ./logs:/app/logs
     networks:
       - app_network
@@ -265,6 +274,7 @@ services:
       timeout: 10s
       retries: 3
     restart: "no"
+
 volumes:
   postgres-db-volume:
 
