@@ -1,4 +1,4 @@
-name: CI/CD Pipeline for Microservices
+name: CI for Microservices (Local Build)
 
 on:
   push:
@@ -9,9 +9,12 @@ on:
       - main
 
 jobs:
-  # Étape 1 : Tests unitaires
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ingest, preprocess, train] # Liste des services à tester
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,25 +26,25 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r tests_unitaires/requirements.txt
+          pip install -r ./src/${{ matrix.service }}/requirements.txt
 
       - name: Run unit tests
         run: |
-          pytest tests_unitaires/
+          pytest tests_unitaires/test_${{ matrix.service }}.py
 
-  # Étape 2 : Build des microservices Docker
   build:
-    needs: test
+    needs: test # Ce job ne s'exécute que si les tests réussissent
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ingest, preprocess, train] # Liste des services à construire
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Docker images
+      - name: Build Docker images # va lancer successivement la construction des images pour chaque service ingest preprocess et train
         run: |
-          docker build -t myorg/api_model ./src/api_model
-          docker build -t myorg/gateway ./src/Gateway
-          docker build -t myorg/ingest ./src/ingest
-          docker build -t myorg/preprocess ./src/preprocess
-          docker build -t myorg/train ./src/train
-          docker build -t myorg/streamlit_app ./src/streamlit_app
+          docker build -t ${ matrix.service }:local ./src/${{ matrix.service }}
+          
+
