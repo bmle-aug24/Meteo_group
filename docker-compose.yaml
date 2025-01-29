@@ -255,6 +255,37 @@ services:
       - 8000:8000
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/check"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  gateway:
+    build:
+      context: src/Gateway
+      dockerfile: Dockerfile
+    image: gateway
+    ports:
+      - 8001:8001
+    networks:
+      - app_network
+    depends_on:
+      api_prediction:
+        condition: service_healthy
+  
+  streamlit:
+    build:
+      context: src/streamlit_app
+      dockerfile: Dockerfile
+    image: streamlit
+    ports:
+      - 8002:8002
+    networks:
+      - app_network
+    depends_on:
+      - gateway
 
 volumes:
   postgres-db-volume:
