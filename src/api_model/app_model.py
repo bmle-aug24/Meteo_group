@@ -5,7 +5,7 @@ import pandas as pd
 from input_classes import InputData, ModelData
 
 api = FastAPI(title="Model API")
-mlflow.set_tracking_uri("http://meteo_group-mlflow-1:8100")
+mlflow.set_tracking_uri("http://mlflow:8100")
 
 print("Loading model...")
 model = mlflow.xgboost.load_model("models:/model@model_last", dst_path="mlflow/")
