@@ -1,0 +1,35 @@
+name: CD for Microservices and Airflow
+
+on:
+  workflow_run:
+    workflows: ["CI/CD Pipeline for Microservices"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker images
+        run: |
+          docker push myorg/api_model
+          docker push myorg/gateway
+          docker push myorg/ingest
+          docker push myorg/preprocess
+          docker push myorg/train
+          docker push myorg/streamlit_app
+
+      - name: Deploy Airflow DAGs
+        run: |
+          scp -r ./src/airflow/dags/ airflow@my-airflow-server:/opt/airflow/dags/
+
+      - name: Restart Airflow Scheduler
+        run: |
+          ssh airflow@my-airflow-server "docker restart airflow-scheduler"
