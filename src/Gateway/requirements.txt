@@ -27,4 +27,5 @@ requests
 fastapi
 uvicorn
 flask-jwt-extended==4.4.0
+python-jose
 
