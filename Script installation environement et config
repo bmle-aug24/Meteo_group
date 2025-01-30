@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Ce script configure l'environnement Docker, Python, dépendances et prépare l'environnement de développement pour notre projet meteo MLOPS
+
+echo "===== Début de l'installation ====="
+
+# Mise à jour du système
+echo "Mise à jour du système..."
+sudo apt-get update && sudo apt-get upgrade -y
+
+# Installation des dépendances essentielles
+echo "Installation des dépendances..."
+sudo apt-get install -y git curl wget python3 python3-pip python3-venv
+
+# Installation de Docker
+echo "Installation de Docker..."
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# Installation de Docker Compose
+echo "Installation de Docker Compose..."
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Création de l'environnement Python virtuel
+echo "Création de l'environnement virtuel Python..."
+python3 -m venv mlops_env
+source mlops_env/bin/activate
+
+# Installation des packages Python essentiels
+echo "Installation des packages Python..."
+pip install --upgrade pip
+pip install numpy pandas scikit-learn jupyter pytest black flake8 pylint
+
+# Création de la structure du projet
+echo "Création de la structure du projet..."
+mkdir -p src tests data/raw data/processed notebooks docs
+touch README.md requirements.txt .gitignore
+
+# Configuration du .gitignore
+echo "mlops_env/
+__pycache__/
+*.pyc
+.DS_Store
+.env" > .gitignore
+
+# Sauvegarde des dépendances
+pip freeze > requirements.txt
+
+echo "===== Installation terminée ====="
+echo "Structure du projet créée :
+.
+├── src/   # source
+├── tests/  #ici les tests
+├── data/   # ici la data avec la data brute et pretraiter
+│   ├── raw/
+│   └── processed/
+├── notebooks/ #ici les notebooks
+├── docs/  # la documentation 
+├── README.md 
+├── requirements.txt  # les dependances a installer
+└── .gitignore"
+
+echo "Pour activer l'environnement virtuel : source mlops_env/bin/activate"
+echo "Pour vérifier l'installation de Docker : docker --version"
+echo "Pour vérifier l'installation de Python : python3 --version"
