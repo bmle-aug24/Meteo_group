@@ -1,0 +1,32 @@
+{
+    "Humidity3pm": {
+        "train_mean": 51.533005978595426,
+        "requests_mean": 10.0,
+        "difference": 41.533005978595426,
+        "drift_detected": true
+    },
+    "MaxTemp": {
+        "train_mean": 23.22856651185977,
+        "requests_mean": 37.9,
+        "difference": 14.671433488140227,
+        "drift_detected": true
+    },
+    "Humidity9am": {
+        "train_mean": 68.8462201656873,
+        "requests_mean": 17.0,
+        "difference": 51.8462201656873,
+        "drift_detected": true
+    },
+    "WindSpeed9am": {
+        "train_mean": 13.990146379530001,
+        "requests_mean": 37.0,
+        "difference": 23.009853620469997,
+        "drift_detected": true
+    },
+    "Temp3pm": {
+        "train_mean": 21.687036171534697,
+        "requests_mean": 37.1,
+        "difference": 15.412963828465305,
+        "drift_detected": true
+    }
+}
