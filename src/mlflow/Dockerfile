@@ -1,11 +1,16 @@
 FROM python:3.11.8
 
-RUN mkdir /app && mkdir /app/mlruns
+# Créer le dossier mlflow
+RUN mkdir -p /app/mlruns
 
-COPY * /app
+# Copier tous les fichiers nécessaires
+COPY . /app
 
-WORKDIR /app/
+# Définir le répertoire de travail
+WORKDIR /app
 
-RUN pip install -r requirements.txt
+# Installer les dépendances
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Lancer le serveur MLflow
 CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "8100"]
