@@ -1,4 +1,4 @@
-name: CI for Microservices (Local Build)
+name: CI for Microservices
 
 on:
   push:
@@ -9,42 +9,39 @@ on:
       - main
 
 jobs:
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ingest, preprocess, train] # Liste des services à tester
+        service: [ingest, preprocess, train] # Liste des services
 
     steps:
+      # Étape 1 : Récupérer le code source
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+      # Étape 2 : Installer DVC et récupérer les données depuis DagsHub
+      - name: Install DVC & Pull Data
+        run: |
+          pip install dvc
+          dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
+          dvc remote modify origin auth basic
+          dvc remote modify origin user bmle-aug24
+          dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17
+          dvc pull
 
+      # Étape 3 : Installer les dépendances Python
       - name: Install dependencies
-        run: |
-          pip install -r ./src/${{ matrix.service }}/requirements.txt
+        run: pip install -r ./src/${{ matrix.service }}/requirements.txt
 
+      # Étape 4 : Exécuter les tests unitaires
       - name: Run unit tests
-        run: |
-          pytest tests_unitaires/test_${{ matrix.service }}.py
+        run: pytest src/${{ matrix.service }}/tests/
 
-  build:
-    needs: test # Ce job ne s'exécute que si les tests réussissent
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [ingest, preprocess, train] # Liste des services à construire
+      # Étape 5 : Construire les images Docker
+      - name: Build Docker images
+        run: docker build -t ${{ matrix.service }}:local ./src/${{ matrix.service }}
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: Build Docker images # va lancer successivement la construction des images pour chaque service ingest preprocess et train
-        run: |
-          docker build -t ${ matrix.service }:local ./src/${{ matrix.service }}
           
 
