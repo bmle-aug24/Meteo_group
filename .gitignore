@@ -1,10 +1,51 @@
+# Ignorer les environnements virtuels
+venv_secu/
+env_meteo/
 venv/
-/venv
 env/
-**/__pycache__/
+.venv/
+airflow_env/
+
+# Fichiers temporaires de Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb~
 Ingestion.ipynb
+
+# Ignorer les fichiers de log
+logs/
 src/airflow/logs/*
 !src/airflow/logs/
-mlruns/
+*.log
+
+# Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
+mlflow/mlartifacts/
+mlflow/mlruns/
 mlruns_1/
+
+# Ignorer les fichiers de configuration sensibles
 .env
+config.yaml
+*.secret
+*.key
+
+# Ignorer les fichiers CSV (données brutes)
+data/raw/
+*.csv
+data/
+
+# Docker
+docker-compose.override.yml
+docker-compose.yaml
+
+# Fichiers spécifiques au projet
+src/Gateway/venv_se/
+logs/airflow/
+
+# Ignorer le fichier de données brut
+data/raw/weatherAUS.csv
+
+# Ignorer les logs d'Airflow
+logs/airflow/dag_processor_manager/dag_processor_manager.log
+
+# Ignorer les __pycache__folders__
+**/__pycache__/**
