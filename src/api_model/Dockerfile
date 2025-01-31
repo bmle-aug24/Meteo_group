@@ -1,12 +1,16 @@
 FROM python:3.11.8
 
-RUN mkdir /app &&  mkdir /app/mlflow
+# Créer le dossier de l'application
+RUN mkdir -p /app/mlflow
 
-COPY * /app
+# Copier tous les fichiers du répertoire source
+COPY . /app
 
-WORKDIR /app/
+# Définir le répertoire de travail
+WORKDIR /app
 
-RUN pip install -r requirements.txt
+# Installer les dépendances
+RUN pip install --no-cache-dir -r requirements.txt
 
 RUN dvc init --no-scm && \
     dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc && \
