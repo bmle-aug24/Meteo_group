@@ -1,0 +1,16 @@
+venv_secu/
+env_meteo/
+venv/
+/venv
+env/
+**/__pycache__/
+Ingestion.ipynb
+src/airflow/logs/*
+!src/airflow/logs/
+.env
+mlflow/mlartifacts/
+mlflow/mlruns/
+logs/airflow/
+data/
+
+src/Gateway/venv_se/
