@@ -28,3 +28,4 @@ CMD sh -c "
 
 # Commande d'exécution
 CMD ["python", "train.py"]
+
