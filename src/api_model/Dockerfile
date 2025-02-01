@@ -24,3 +24,4 @@ CMD sh -c "
     uvicorn app_model:api --host 0.0.0.0 --port 8000"
 
 CMD ["uvicorn", "app_model:api", "--host", "0.0.0.0", "--port", "8000"]
+

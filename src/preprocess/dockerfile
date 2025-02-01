@@ -31,5 +31,4 @@ CMD sh -c "
     dvc push # Versionner et pousser les nouvelles données traitées vers DagsHub"
 
 
-
 CMD ["python", "/app/src/preprocess/preprocess.py"]

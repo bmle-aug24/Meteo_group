@@ -42,16 +42,12 @@ jobs:
       # Étape 5 : Versionner les données traitées et le modèle
       - name: Push Processed Data and Model to DagsHub
         run: |
-          # Ajouter les données prétraitées
           dvc add data/processed/X_train.csv
           dvc add data/processed/X_test.csv
           dvc add data/processed/y_train.csv
           dvc add data/processed/y_test.csv
-
-          dvc add mlflow/latest_model.pkl  
-
-          git add data/processed/*.dvc mlflow/latest_model.pkl.dvc .gitignore
+          dvc add mlflow/*
+          git add data/processed/*.dvc mlflow/*.dvc .gitignore
           git commit -m "Mise à jour des données traitées et du modèle entraîné"
-          git push origin main  # 📌 Pousser les métadonnées DVC vers GitHub
-
           dvc push
+
