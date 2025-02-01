@@ -1,3 +1,4 @@
+
 FROM python:3.9-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -29,6 +30,5 @@ CMD sh -c "
     dvc add /app/data/processed/y_train.csv && \
     dvc add /app/data/processed/y_test.csv && \
     dvc push # Versionner et pousser les nouvelles données traitées vers DagsHub"
-
 
 CMD ["python", "/app/src/preprocess/preprocess.py"]
