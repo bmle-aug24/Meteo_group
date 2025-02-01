@@ -11,8 +11,9 @@ RUN mkdir -p /app/config
 WORKDIR /app
 
 COPY * /app/src/preprocess/
-#COPY ./data/raw/weatherAUS.csv /app/data/raw/weatherAUS.csv
-#COPY ./dvc.yaml /app/dvc.yaml
+COPY config/config.yaml /app/config/config.yaml
+# COPY ./data/raw/weatherAUS.csv /app/data/raw/weatherAUS.csv
+# COPY ./dvc.yaml /app/dvc.yaml
 
 RUN pip install --no-cache-dir -r /app/src/preprocess/requirements.txt dvc
 RUN dvc init --no-scm && \
@@ -23,12 +24,12 @@ RUN dvc init --no-scm && \
     dvc pull # Récupère les fichiers versionnés depuis DagsHub
 
 # Ajouter une commande shell pour gérer le traitement des données et le versionnement
-CMD sh -c "
-    python preprocess.py && \
+CMD sh -c 'python /app/src/preprocess/preprocess.py && \
     dvc add /app/data/processed/X_train.csv && \
     dvc add /app/data/processed/X_test.csv && \
     dvc add /app/data/processed/y_train.csv && \
     dvc add /app/data/processed/y_test.csv && \
-    dvc push # Versionner et pousser les nouvelles données traitées vers DagsHub"
+    dvc push'
+
 
 CMD ["python", "/app/src/preprocess/preprocess.py"]
