@@ -24,6 +24,7 @@ def ingest_data(location):
 
     if r.status_code == 200:
         try:
+            if datetime.today().day == 1: raise AttributeError
             print(f"Loading {location}", end="\r")
             soup = bs(r.content, 'html5lib')
             table = soup.find("tbody")
