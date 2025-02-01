@@ -50,4 +50,3 @@ jobs:
           git add data/processed/*.dvc mlflow/*.dvc .gitignore
           git commit -m "Mise à jour des données traitées et du modèle entraîné"
           dvc push
-
