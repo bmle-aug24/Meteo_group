@@ -36,7 +36,7 @@ jobs:
 
       # Étape 4 : Exécuter les tests unitaires
       - name: Run unit tests
-        run: pytest src/${{ matrix.service }}/tests/
+        run: pytest ./src/${{ matrix.service }}/tests_unitaires/ --maxfail=3 --disable-warnings
 
       # Étape 5 : Construire les images Docker
       - name: Build Docker images

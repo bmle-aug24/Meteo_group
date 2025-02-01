@@ -19,13 +19,5 @@ RUN dvc init --no-scm && \
     dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17 && \
     dvc pull # Récupération des fichiers versionnés
 
-# Commande pour exécuter le service de training avec gestion DVC
-CMD sh -c "
-    dvc pull && \
-    python train.py && \
-    dvc add /app/mlflow/latest_model.pkl && \
-    dvc push" # Versionne et pousse le modèle entraîné
-
-# Commande d'exécution
-CMD ["python", "train.py"]
+CMD ["sh", "-c", "dvc pull && python train.py && dvc add /app/mlflow/latest_model.pkl && dvc push"]
 

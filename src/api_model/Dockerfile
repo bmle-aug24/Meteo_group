@@ -19,9 +19,6 @@ RUN dvc init --no-scm && \
     dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17 && \
     dvc pull # Récupération des fichiers versionnés
 
-CMD sh -c "
-    dvc pull && \
-    uvicorn app_model:api --host 0.0.0.0 --port 8000"
 
-CMD ["uvicorn", "app_model:api", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "dvc pull && uvicorn app_model:api --host 0.0.0.0 --port 8000"]
 

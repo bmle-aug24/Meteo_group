@@ -16,12 +16,4 @@ RUN dvc init --no-scm && \
     dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17 && \
     dvc pull  # 📌 Récupération des fichiers versionnés
 
-CMD ["sh", "-c", "
-    dvc pull && \
-    python drift_detection.py && \
-    dvc add /app/data/monitoring/drift_report.csv && \
-    dvc push
-"]
-
-# Commande par défaut pour exécuter le script de monitoring
-CMD ["python", "drift_detection.py"]
+CMD ["sh", "-c", "dvc pull && python drift_detection.py && dvc add /app/data/monitoring/drift_report.csv && dvc push"]
