@@ -5,6 +5,7 @@ venv/
 env/
 .venv/
 airflow_env/
+train_env/
 
 # Fichiers temporaires de Jupyter Notebook
 .ipynb_checkpoints/
@@ -12,15 +13,15 @@ airflow_env/
 Ingestion.ipynb
 
 # Ignorer les fichiers de log
-logs/
-src/airflow/logs/*
+
+#logs/
+src/airflow/logs/
 !src/airflow/logs/
-*.log
+#*.log
 
 # Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
 mlflow/mlartifacts/
 mlflow/mlruns/
-mlruns_1/
 
 # Ignorer les fichiers de configuration sensibles
 .env
@@ -29,9 +30,10 @@ config.yaml
 *.key
 
 # Ignorer les fichiers CSV (données brutes)
-data/raw/
-*.csv
-data/
+#data/raw/
+
+#*.csv
+#data/
 
 # Docker
 docker-compose.override.yml
@@ -42,10 +44,12 @@ src/Gateway/venv_se/
 logs/airflow/
 
 # Ignorer le fichier de données brut
-data/raw/weatherAUS.csv
+#data/raw/weatherAUS.csv
 
 # Ignorer les logs d'Airflow
 logs/airflow/dag_processor_manager/dag_processor_manager.log
+#logs/airflow/dag_processor_manager/
 
 # Ignorer les __pycache__folders__
 **/__pycache__/**
+src/train/train_env/

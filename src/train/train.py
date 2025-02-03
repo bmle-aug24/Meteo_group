@@ -9,6 +9,21 @@ import xgboost as xgb
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from mlflow.tracking import MlflowClient  # <-- pour le Model Registry
 
+
+# Ajout d'un log
+from logger import logger
+
+def process_data():
+    logger.info("Début du traitement des données...")
+    try:
+        # Simuler une erreur
+        raise ValueError("Erreur de test")
+    except Exception as e:
+        logger.error(f"Erreur rencontrée : {e}")
+
+process_data()
+
+
 def load_config(config_path="config/config.yaml"):
     """
     Cette fonction permet de charger la configuration (chemins, hyperparamètres, etc.)
@@ -16,6 +31,7 @@ def load_config(config_path="config/config.yaml"):
     """
     with open(config_path, "r") as file:
         return yaml.safe_load(file)
+
 
 def train_and_evaluate(X_train, y_train, X_test, y_test, config):
     """

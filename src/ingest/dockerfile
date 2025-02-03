@@ -1,0 +1,17 @@
+
+FROM python:3.11.8
+
+# Créer le dossier de l'application
+RUN mkdir -p /app/data/raw
+
+# Copier tous les fichiers nécessaires
+COPY . /app
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Installer les dépendances
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Lancer le script d'ingestion
+CMD ["python", "script_meteo.py"]

@@ -2,6 +2,20 @@ import pandas as pd
 from datetime import timedelta
 from ingest_data import get_day_data  # Importation de la fonction pour récupérer les données via l'API
 
+# Ajout d'un log
+from logger import logger
+
+def process_data():
+    logger.info("Début du traitement des données...")
+    try:
+        # Simuler une erreur
+        raise ValueError("Erreur de test")
+    except Exception as e:
+        logger.error(f"Erreur rencontrée : {e}")
+
+process_data()
+
+
 # Fonction pour formater et ajouter de nouvelles données au DataFrame
 def format_and_add_new_data(df, raw_data):
     """
