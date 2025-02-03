@@ -20,7 +20,6 @@ src/airflow/logs/*
 # Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
 mlflow/mlartifacts/
 mlflow/mlruns/
-mlruns_1/
 
 # Ignorer les fichiers de configuration sensibles
 .env
@@ -29,9 +28,9 @@ config.yaml
 *.key
 
 # Ignorer les fichiers CSV (données brutes)
-data/raw/
+#data/raw/
 *.csv
-data/
+#data/
 
 # Docker
 docker-compose.override.yml
@@ -42,7 +41,7 @@ src/Gateway/venv_se/
 logs/airflow/
 
 # Ignorer le fichier de données brut
-data/raw/weatherAUS.csv
+#data/raw/weatherAUS.csv
 
 # Ignorer les logs d'Airflow
 logs/airflow/dag_processor_manager/dag_processor_manager.log
