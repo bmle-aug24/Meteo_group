@@ -5,6 +5,7 @@ venv/
 env/
 .venv/
 airflow_env/
+train_env/
 
 # Fichiers temporaires de Jupyter Notebook
 .ipynb_checkpoints/
@@ -12,9 +13,10 @@ airflow_env/
 Ingestion.ipynb
 
 # Ignorer les fichiers de log
-logs/
+
+#logs/
 src/airflow/logs/
-#!src/airflow/logs/
+!src/airflow/logs/
 #*.log
 
 # Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
@@ -50,3 +52,4 @@ logs/airflow/dag_processor_manager/dag_processor_manager.log
 
 # Ignorer les __pycache__folders__
 **/__pycache__/**
+src/train/train_env/
