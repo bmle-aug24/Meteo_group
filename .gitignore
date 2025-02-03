@@ -13,9 +13,10 @@ train_env/
 Ingestion.ipynb
 
 # Ignorer les fichiers de log
-logs/
+
+#logs/
 src/airflow/logs/
-#!src/airflow/logs/
+!src/airflow/logs/
 #*.log
 
 # Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
