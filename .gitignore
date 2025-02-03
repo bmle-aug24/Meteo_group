@@ -31,6 +31,3 @@ config.yaml
 # Ignorer les fichiers CSV (données brutes)
 data/raw/
 *.csv
-
-# Docker
-docker-compose.override.yml
