@@ -16,7 +16,7 @@ Ingestion.ipynb
 #logs/
 src/airflow/logs/*
 !src/airflow/logs/
-*.log
+#*.log
 
 # Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
 mlflow/mlartifacts/
