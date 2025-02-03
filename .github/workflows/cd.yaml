@@ -18,12 +18,26 @@ jobs:
       # Étape 2 : Installer DVC et récupérer les données depuis DagsHub
       - name: Install DVC & Pull Data
         run: |
+          apt update 
+           apt install -y git 
           pip install dvc
+          pip install dvc 
+          git init 
+          git config --global user.email 'you@example.com' 
+          git config --global user.name 'Your Name' 
+          dvc init -f 
+          git add .dvc 
+          git commit -m 'Initialize DVC' 
           dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
           dvc remote modify origin auth basic
           dvc remote modify origin user bmle-aug24
+<<<<<<< Updated upstream
           dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17
           dvc pull
+=======
+          dvc remote modify origin password $DVC_PASSWORD
+          dvc status
+>>>>>>> Stashed changes
 
       # Étape 3 : Déployer les services avec Docker Compose
       - name: Deploy with Docker Compose

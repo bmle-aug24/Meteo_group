@@ -17,3 +17,12 @@ with DAG(
     ingestion_task = PythonOperator(task_id='start_ingestion_container',
                                     python_callable=start_existing_container,
                                     op_kwargs={'container_name': 'meteo_group-ingestion-1'})
+
+    lauch_dvc_task = PythonOperator(task_id='dvc_commit',
+                                    python_callable=start_existing_container,
+                                    op_kwargs={'container_name': 'meteo_group-dvc-1',
+                                                'command' : """ sh -c "echo 'start container' && dvc add . &&\
+                                                                dvc push && git add . && git commit -m 'updates dvc' && git push \
+                                                                echo 'push ended' " """})
+    
+    ingestion_task >> lauch_dvc_task

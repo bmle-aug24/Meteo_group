@@ -25,4 +25,11 @@ with DAG(
                                        python_callable=load_model_script,
                                        op_kwargs={'model_name': 'model', 'alias': 'model_last'})
     
-    preprocess_task >> training_task >> update_model_task
+    lauch_dvc_task = PythonOperator(task_id='dvc_commit',
+                                    python_callable=start_existing_container,
+                                    op_kwargs={'container_name': 'meteo_group-dvc-1',
+                                                'command' : """sh -c "dvc add data/preprocessed/ mlflow/mlartifacts mlflow/mlruns mlflow/artifact &&\
+                                                                dvc push && git push" \
+                                                                echo 'push ended' """})
+    
+    preprocess_task >> training_task >> update_model_task >> lauch_dvc_task
