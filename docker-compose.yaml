@@ -342,27 +342,6 @@ services:
 
   monitoring:
     build:
-      context: src/monitoring
-      dockerfile: Dockerfile
-    image: monitoring_service
-    volumes:
-      - ./data:/app/data
-      - ./config:/app/config
-      - ./logs:/app/logs
-    networks:
-      - app_network
-    depends_on:
-      train_service:
-        condition: service_completed_successfully
-    healthcheck:
-      test: ["CMD", "python", "/app/drift_detection.py"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: "no"
-
-  monitoring:
-    build:
       context: src/airflow/dags/monitoring
       dockerfile: Dockerfile
     image: monitoring_service
