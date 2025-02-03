@@ -42,6 +42,7 @@
 # Feel free to modify this file to suit your needs.
 ---
 version: "3"
+
 x-airflow-common: &airflow-common
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.8.1}
   environment: &airflow-common-env
@@ -58,14 +59,14 @@ x-airflow-common: &airflow-common
     AIRFLOW__SMTP__SMTP_PASSWORD: "${AIRFLOW_SMTP_PASSWORD}"
     AIRFLOW__SMTP__SMTP_MAIL_FROM: "meteo.bmle.24@gmail.com"
     AIRFLOW__API__ENABLE_EXPERIMENTAL_API: "true"
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker} 
-  
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker}
+
   volumes:
     - ./src/airflow/dags:/opt/airflow/dags
     - ./logs/airflow/:/opt/airflow/logs
     - ./src/airflow/plugins:/opt/airflow/plugins
-    - /var/run/docker.sock:/var/run/docker.sock 
-  
+    - /var/run/docker.sock:/var/run/docker.sock
+
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     redis:
@@ -74,9 +75,9 @@ x-airflow-common: &airflow-common
       condition: service_healthy
   networks:
     - app_network
-    - default
 
 services:
+
   dvc: # Ajout du service DVC au docker-compose
     image: python:3.9-slim
     volumes:
@@ -92,6 +93,7 @@ services:
       dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17 &&
       dvc pull" # Récupère les fichiers versionnés depuis DagsHub
     restart: "no"
+
 #Airflow services
   postgres:
     image: postgres:13
@@ -106,23 +108,27 @@ services:
       interval: 5s
       retries: 5
     restart: always
+    networks:
+      - app_network
 
   redis:
     image: redis:latest
     ports:
-      - 6379:6379
+      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 30s
       retries: 50
     restart: always
+    networks:
+      - app_network
 
   airflow-webserver:
     <<: *airflow-common
     command: webserver
     ports:
-      - 8080:8080
+      - "8080:8080"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 10s
@@ -133,22 +139,21 @@ services:
       airflow-init:
         condition: service_completed_successfully
     volumes:
-
      - ./src/airflow/dags:/opt/airflow/dags
      - ./logs/airflow/:/opt/airflow/logs
      - ./src/airflow/plugins:/opt/airflow/plugins
      - /var/run/docker.sock:/var/run/docker.sock 
      - ./data:/opt/airflow/data
+    networks:
+      - app_network
 
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"',
-        ]
+        - "CMD-SHELL"
+        - 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
       interval: 10s
       timeout: 10s
       retries: 5
@@ -157,12 +162,13 @@ services:
       airflow-init:
         condition: service_completed_successfully
     volumes:
-
      - ./src/airflow/dags:/opt/airflow/dags
      - ./logs/airflow/:/opt/airflow/logs
      - ./src/airflow/plugins:/opt/airflow/plugins
      - /var/run/docker.sock:/var/run/docker.sock 
      - ./data:/opt/airflow/data 
+    networks:
+      - app_network
 
   airflow-worker:
     <<: *airflow-common
@@ -179,12 +185,14 @@ services:
       airflow-init:
         condition: service_completed_successfully
     volumes:
-
       - ./src/airflow/dags:/opt/airflow/dags
       - ./logs/airflow/:/opt/airflow/logs
       - ./src/airflow/plugins:/opt/airflow/plugins
       - /var/run/docker.sock:/var/run/docker.sock  
       - ./data:/opt/airflow/data
+
+    networks:
+      - app_network
 
   airflow-init:
     <<: *airflow-common
@@ -195,12 +203,14 @@ services:
       _AIRFLOW_WWW_USER_CREATE: "true"
       _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
       _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+    networks:
+      - app_network
 
   flower:
     <<: *airflow-common
     command: celery flower
     ports:
-      - 5555:5555
+      - "5555:5555"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
       interval: 10s
@@ -210,6 +220,8 @@ services:
     depends_on:
       airflow-init:
         condition: service_completed_successfully
+    networks:
+      - app_network
 
   ingestion:
     build:
@@ -222,9 +234,11 @@ services:
       dvc:
         condition: service_completed_successfully
     volumes:
-      - ./data:/app/data   # Correction : accès direct à data
-      - ./config:/app/config   # Correction : accès direct à config
-  
+      - ./data:/app/data
+      - ./config:/app/config
+    networks:
+      - app_network
+
   mlflow:
     build:
       context: src/mlflow
@@ -233,7 +247,7 @@ services:
     volumes:
       - ./mlflow:/app
     ports:
-      - 8100:8100
+      - "8100:8100"
     networks:
       - app_network
     depends_on:
@@ -252,8 +266,7 @@ services:
       dockerfile: Dockerfile
     image: preprocessing
     volumes:
-      - ./data/raw:/app/data/raw
-      - ./data/processed:/app/data/processed
+      - ./data:/app/data
       - ./config:/app/config
     networks:
       - app_network
@@ -276,7 +289,7 @@ services:
     depends_on:
       preprocessing:
         condition: service_completed_successfully
-    
+
   api_prediction:
     build:
       context: src/api_model
@@ -348,10 +361,59 @@ services:
       retries: 3
     restart: "no"
 
+  monitoring:
+    build:
+      context: src/airflow/dags/monitoring
+      dockerfile: Dockerfile
+    image: monitoring_service
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logs:/app/logs
+    depends_on:
+      train_service:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "/app/drift_monitoring.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: "no"
+    networks:
+      - app_network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - app_network
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - app_network
+      - monitoring
+
 volumes:
   postgres-db-volume:
+  grafana-storage:
 
 networks:
   app_network:
     driver: bridge
+  monitoring:
+    driver: bridge
+
 

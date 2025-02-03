@@ -216,8 +216,8 @@ Ce projet a été développés dans le cadre de la formation Machine Learning En
   [GitHub]()
 
 - Anas MBARKI /
-  [LinkedIn]() /
-  [GitHub]()
+  [LinkedIn](https://www.linkedin.com/in/anas-mbarki-1010/) /
+  [GitHub](https://github.com/AnasMba19)
 
 - Ellie PASCAUD /
   [LinkedIn]() /
@@ -229,5 +229,5 @@ Ce projet a été développés dans le cadre de la formation Machine Learning En
 
 ### Mentor
 - Sébastien SIME /
-  [LinkedIn]() /
-  [GitHub]()
+  [LinkedIn](https://www.linkedin.com/in/s-sime/) /
+  [GitHub](https://github.com/ssime-git)

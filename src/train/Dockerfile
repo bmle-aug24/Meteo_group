@@ -20,4 +20,3 @@ RUN dvc init --no-scm && \
     dvc pull # Récupération des fichiers versionnés
 
 CMD ["sh", "-c", "dvc pull && python train.py && dvc add /app/mlflow/latest_model.pkl && dvc push"]
-
