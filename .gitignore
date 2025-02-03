@@ -51,3 +51,4 @@ logs/airflow/dag_processor_manager/dag_processor_manager.log
 
 # Ignorer les __pycache__folders__
 **/__pycache__/**
+src/train/train_env/
