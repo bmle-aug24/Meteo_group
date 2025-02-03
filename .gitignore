@@ -13,9 +13,9 @@ Ingestion.ipynb
 
 # Ignorer les fichiers de log
 logs/
-src/airflow/logs/*
-!src/airflow/logs/
-*.log
+src/airflow/logs/
+#!src/airflow/logs/
+#*.log
 
 # Fichiers MLflow (évite d'encombrer le repo avec des artifacts)
 mlflow/mlartifacts/
@@ -29,7 +29,8 @@ config.yaml
 
 # Ignorer les fichiers CSV (données brutes)
 #data/raw/
-*.csv
+
+#*.csv
 #data/
 
 # Docker
@@ -45,6 +46,7 @@ logs/airflow/
 
 # Ignorer les logs d'Airflow
 logs/airflow/dag_processor_manager/dag_processor_manager.log
+#logs/airflow/dag_processor_manager/
 
 # Ignorer les __pycache__folders__
 **/__pycache__/**
