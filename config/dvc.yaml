@@ -1,4 +1,10 @@
 stages:
+  ingestion:
+    cmd: python src/ingest/script_meteo.py
+    deps:
+      - data/raw/weatherAUS.csv
+    outs:
+      - data/raw/weatherAUS.csv
   preprocess:
     cmd: python src/preprocess.py
     deps:

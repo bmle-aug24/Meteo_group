@@ -98,7 +98,7 @@ services:
       dvc remote modify origin auth basic &&
       dvc remote modify origin user bmle-aug24 &&
       dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17 &&
-      dvc pull &&
+      dvc pull --force &&
       echo 'Pull completed' " # Récupère les fichiers versionnés depuis DagsHub
     restart: "no"
 
