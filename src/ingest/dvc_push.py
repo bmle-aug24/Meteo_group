@@ -1,16 +1,21 @@
 import subprocess as sp
+import argparse
+import os
 from datetime import datetime
 
-def main():
+def main(folder:str="."):
     files = ["data/raw"]
     message_commit  = f"Update_DVC {datetime.today().strftime('%Y-%m-%d %H:%M:%S')}"
     for file in files:
-        sp.run(["dvc", "add", file], check=True)
-        sp.run(["git", "add", file+".dvc"], check=True)
-    sp.run(["dvc", "push"], check=True)
-    sp.run(["git", "commit", "-m", message_commit], check=True)
+        sp.run(["dvc", "add", file], check=True, cwd=folder)
+        sp.run(["git", "add", file+".dvc"], check=True, cwd=folder)
+    sp.run(["dvc", "push"], check=True, cwd=folder)
+    sp.run(["git", "commit", "-m", message_commit], check=True, cwd=folder)
     sp.run(["git", "push"], check=True)
     print("Data pushed for versioning")
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--folder', type=str, default=".")
+    args = parser.parse_args()
+    main(args.folder)

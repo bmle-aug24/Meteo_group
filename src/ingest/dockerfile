@@ -2,7 +2,7 @@
 FROM python:3.11.8
 
 # Créer le dossier de l'application
-RUN mkdir -p /app/data/raw
+RUN mkdir -p /app/data/raw /app/repo
 
 # Copier tous les fichiers nécessaires
 COPY . /app
