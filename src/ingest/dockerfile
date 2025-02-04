@@ -15,4 +15,4 @@ RUN apt update && apt install -y git && pip install dvc
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Lancer le script d'ingestion
-CMD ["sh", "-c", "python script_meteo.py && python dvc_push.py --folder app/repo"]
+CMD ["sh", "-c", "python script_meteo.py && python dvc_push.py --folder /app/repo"]
