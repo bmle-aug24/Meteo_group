@@ -235,6 +235,7 @@ services:
       - ./data:/app/data
       - ./config:/app/config
       - ./:/app/repo
+      - ~/.gitconfig:/root/.gitconfig:ro
     networks:
       - app_network
 
