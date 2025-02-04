@@ -24,7 +24,7 @@ jobs:
       - name: Install DVC & Pull Data
         run: |
           pip install dvc
-          dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
+          dvc remote add --force origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
           dvc remote modify origin auth basic
           dvc remote modify origin user bmle-aug24
           dvc remote modify origin password "06082024BMLE"
