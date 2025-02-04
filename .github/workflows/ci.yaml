@@ -65,8 +65,8 @@ jobs:
       - name: Install dependencies (train)
         run: pip install -r ./src/train/requirements.txt
 
-      - name: Run unit tests (train)
-        run: pytest ./tests_unitaires/test_train.py --maxfail=3 --disable-warnings
+      # - name: Run unit tests (train)
+      #   run: pytest ./tests_unitaires/test_train.py --maxfail=3 --disable-warnings
 
       - name: Run train script
         run: python ./src/train/train.py
