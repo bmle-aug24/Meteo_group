@@ -159,8 +159,14 @@ Pour faire tourner l'application vous devez suivre les commandes suivants
 ```
 git clone bmle-aug24/Meteo_group   # Copier le repo à partir de GitHub
 dvc pull                           # Télécharge la dernière version des données. 
+```
+Créez vos données d'enviromnement avant de lancer l'application
+```
+echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env              # Sur linux
+Set-Content -Path .env -Value "AIRFLOW_UID=50000`nAIRFLOW_GID=0"  # Sur Windows
 docker-compose up -d               # Déclenche tous les serveurs
 ```
+
 Vérifiez que tous les conteneurs sont bien lancés. Utilisez le command:
 ```
 docker ps                          # Vérification des conteneurs
