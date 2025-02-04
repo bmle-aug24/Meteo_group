@@ -28,7 +28,7 @@ jobs:
           dvc remote modify origin auth basic
           dvc remote modify origin user bmle-aug24
           dvc remote modify origin password "06082024BMLE"
-          dvc pull
+          dvc pull --jobs 1
 
       # Étape 3 : Installer les dépendances Python
       - name: Install dependencies
