@@ -3,7 +3,10 @@ import yaml
 from sklearn.model_selection import train_test_split
 import os
 
+
+# Import du logger
 from logger import logger
+import traceback
 
 def process_data():
     logger.info("Début du traitement des données...")
@@ -12,8 +15,11 @@ def process_data():
         raise ValueError("Erreur de test")
     except Exception as e:
         logger.error(f"Erreur rencontrée : {e}")
+        logger.debug(traceback.format_exc())
 
-process_data()
+if __name__ == "__main__":
+    process_data()
+
 
 
 def load_config(yaml_path):

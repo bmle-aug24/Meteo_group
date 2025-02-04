@@ -1,18 +1,27 @@
 import logging
 import os
 
-# Création du dossier logs s'il n'existe pas
-log_dir = "logs"
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
+# Définition du chemin du dossier logs principal
+LOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../logs"))
+os.makedirs(LOG_DIR, exist_ok=True)  # Création du dossier logs s'il n'existe pas
 
-# Configuration du logger
-logging.basicConfig(
-    filename=os.path.join(log_dir, "service.log"),  # Fichier de logs
-    level=logging.INFO,  # Niveau des logs
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
+# Chemin du fichier log spécifique à ingest
+LOG_FILE = os.path.join(LOG_DIR, "preprocess.log")
 
-logger = logging.getLogger(__name__)
+# Création du logger
+logger = logging.getLogger("preprocess")
+logger.setLevel(logging.INFO)
 
-logger.info("Logger configuré avec succès !")
+# Vérifier si un handler existe déjà (évite la duplication des logs)
+if not logger.hasHandlers():
+    file_handler = logging.FileHandler(LOG_FILE)
+    file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s"))
+    
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s"))
+
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+logger.info("Logger configuré avec succès pour preprocess !")
+

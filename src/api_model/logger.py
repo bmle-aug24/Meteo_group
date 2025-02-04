@@ -6,10 +6,10 @@ LOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../logs"))
 os.makedirs(LOG_DIR, exist_ok=True)  # Création du dossier logs s'il n'existe pas
 
 # Chemin du fichier log spécifique à ingest
-LOG_FILE = os.path.join(LOG_DIR, "ingest.log")
+LOG_FILE = os.path.join(LOG_DIR, "api_model.log")
 
 # Création du logger
-logger = logging.getLogger("ingest")
+logger = logging.getLogger("api_model")
 logger.setLevel(logging.INFO)
 
 # Vérifier si un handler existe déjà (évite la duplication des logs)
@@ -23,5 +23,5 @@ if not logger.hasHandlers():
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
 
-logger.info("Logger configuré avec succès pour ingest !")
+logger.info("Logger configuré avec succès pour api_model!")
 

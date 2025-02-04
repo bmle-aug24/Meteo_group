@@ -9,6 +9,25 @@ import time
 # Import du module pour Prometheus
 from prometheus_fastapi_instrumentator import Instrumentator
 
+
+# Import du logger
+from logger import logger
+import traceback
+
+def process_data():
+    logger.info("Début du traitement des données...")
+    try:
+        # Simuler une erreur
+        raise ValueError("Erreur de test")
+    except Exception as e:
+        logger.error(f"Erreur rencontrée : {e}")
+        logger.debug(traceback.format_exc())
+
+if __name__ == "__main__":
+    process_data()
+
+
+
 # Création de l'API FastAPI
 api = FastAPI(title="Model API")
 
