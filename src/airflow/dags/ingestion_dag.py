@@ -18,9 +18,4 @@ with DAG(
                                     python_callable=start_existing_container,
                                     op_kwargs={'container_name': 'meteo_group-ingestion-1'})
 
-    lauch_dvc_task = PythonOperator(task_id='dvc_commit',
-                                    python_callable=launch_dvc_push_container,
-                                    op_kwargs={'container_name': 'meteo_group-dvc-1',
-                                                'files' : ["data/raw"]})
-    
-    ingestion_task >> lauch_dvc_task
+    ingestion_task 
