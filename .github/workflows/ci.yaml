@@ -16,35 +16,36 @@ jobs:
     #     service: [ingest, preprocess, train] # Liste des services
 
     steps:
-      # Étape 1 : Récupérer le code source
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Configurer Python 3.12 pour l’ingest
       - name: Setup Python 3.12 for ingest
-        id: python312
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
       
       - name: Install dependencies (ingest)
-        run: ${{ steps.python312.outputs.python-path }}/bin/pip install -r ./src/ingest/requirements.txt
+        run: pip install -r ./src/ingest/requirements.txt
       
       - name: Build Docker image (ingest)
         run: docker build -t ingest-test:local ./src/ingest/
 
-      # Configurer Python 3.9 pour le preprocess
+  preprocess:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
       - name: Setup Python 3.9 for preprocess
-        id: python39
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
       
       - name: Install dependencies (preprocess)
-        run: ${{ steps.python39.outputs.python-path }}/bin/pip install -r ./src/preprocess/requirements.txt
+        run: pip install -r ./src/preprocess/requirements.txt
       
       - name: Run unit tests (preprocess)
-        run: ${{ steps.python39.outputs.python-path }}/bin/pytest ./tests_unitaires/test_preprocess.py --maxfail=3 --disable-warnings
+        run: pytest ./tests_unitaires/test_preprocess.py --maxfail=3 --disable-warnings
       
       - name: Build Docker image (preprocess)
         run: docker build -t preprocess-test:local ./src/preprocess/
