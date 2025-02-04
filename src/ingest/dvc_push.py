@@ -12,7 +12,10 @@ def main(folder:str="."):
         sp.run(["dvc", "add", file], check=True, cwd=folder)
         sp.run(["git", "add", file+".dvc"], check=True, cwd=folder)
     sp.run(["dvc", "push"], check=True, cwd=folder)
-    sp.run(["git", "commit", "-m", message_commit], check=True, cwd=folder)
+    try:
+        sp.run(["git", "commit", "-m", message_commit], check=True, cwd=folder)
+    except sp.CalledProcessError:
+        print("No changes to commit.")
     sp.run(["git", "push"], check=True)
     print("Data pushed for versioning")
 
