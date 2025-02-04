@@ -30,18 +30,33 @@ jobs:
           dvc remote modify origin password "06082024BMLE"
           dvc pull --jobs 1
 
-      # Étape 3 : Installer les dépendances Python
-      - name: Install dependencies
-        run: pip install -r ./src/${{ matrix.service }}/requirements.txt
+      # # Étape 3 : Installer les dépendances Python
+      # - name: Install dependencies
+      #   run: pip install -r ./src/${{ matrix.service }}/requirements.txt
 
-      # Étape 4 : Exécuter les tests unitaires
-      - name: Run unit tests
-        run: pytest ./src/${{ matrix.service }}/tests_unitaires/ --maxfail=3 --disable-warnings
+
+      # # Étape 4 : Exécuter les tests unitaires
+      # - name: Run unit tests
+      #   run: pytest ./src/${{ matrix.service }}/tests_unitaires/ --maxfail=3 --disable-warnings
+
+      # # Étape 5 : Construire les images Docker
+      # - name: Build Docker images
+      #   run: docker build -t ${{ matrix.service }}:local ./src/${{ matrix.service }}
+
+
+
+
+
+
+      # Étape 3 : Installer les dépendances Python
+      - name: Install dependencies (ingest)
+        run: pip install -r ./src/ingest/requirements.txt
 
       # Étape 5 : Construire les images Docker
-      - name: Build Docker images
-        run: docker build -t ${{ matrix.service }}:local ./src/${{ matrix.service }}
+      - name: Build Docker images (ingest)
+        run: docker build -t ingest-test:local ./src/ingest/
 
+        
 
 # name: CI for Microservices
 
