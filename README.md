@@ -134,11 +134,12 @@ Ce projet implémente un système de prédiction du lendemain en Australie basé
 
 Il y a différents microservices qui tournent au même temps pour faire fonctionner l'application:
 - #### Ingestion
-Ce microservices sert à récupérer les données journalières des différents endroits pour les enregistrer sur la base de données brute pour une prochaine entrainement.
+Ce microservices sert à récupérer les données journalières des différents endroits pour les enregistrer sur la base de données brute pour une prochaine entrainement. Dedans le conteneur, la gestion de version des données brutes est gérée via DVC.
 - #### Preprocessing
-Ce microservice récupère la dernière version des données brutes et preprocess les données pour les tourner directement vers de données exploitables dans l’entrainement
+Ce microservice récupère la dernière version des données brutes et preprocess les données pour les tourner directement vers de données exploitables dans l’entrainement.
+Dedans le conteneur, la gestion de version des données prétraités est géré via DVC.
 - #### Training 
-Ce microservice utilise les données déjà prétraités pour entrainer un modèle XGBoost.
+Une fois entrainés la gestion du stockage des expériences et modèles du serveur MLFlow est géré via DVC.
 - #### MLFlow
 Ce microservice crée un serveur pour stocker et tracker les différentes expériences et versions de modèles.
 - #### API_prediction
