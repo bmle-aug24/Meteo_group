@@ -53,11 +53,16 @@
 
 name: CD for Microservices
 
+# on:
+#   workflow_run:
+#     workflows: ["CI for Microservices"]
+#     types:
+#       - completed
+
 on:
-  workflow_run:
-    workflows: ["CI for Microservices"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
