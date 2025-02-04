@@ -48,13 +48,23 @@ jobs:
 
 
 
-      # Étape 3 : Installer les dépendances Python
+      # Étape 3 : Installer les dépendances Python INGEST
       - name: Install dependencies (ingest)
         run: pip install -r ./src/ingest/requirements.txt
 
       # Étape 5 : Construire les images Docker
       - name: Build Docker images (ingest)
         run: docker build -t ingest-test:local ./src/ingest/
+
+      # Étape 3 : Installer les dépendances Python
+      - name: Install dependencies (preprocess)
+        run: pip install -r ./src/preprocess/requirements.txt
+
+      # Étape 5 : Construire les images Docker
+      - name: Build Docker images (preprocess)
+        run: docker build -t preprocess-test:local ./src/preprocess/
+
+        
 
         
 
