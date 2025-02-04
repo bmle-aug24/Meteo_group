@@ -68,16 +68,22 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install DVC & Pull Data
-        env:
-          DVC_PASSWORD: ${{ secrets.DVC_PASSWORD }}
+        # env:
+        #   DVC_PASSWORD: ${{ secrets.DVC_PASSWORD }}
         run: |
           pip install dvc
           dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
           dvc remote modify origin auth basic
           dvc remote modify origin user bmle-aug24
-          dvc remote modify origin password $DVC_PASSWORD
+          dvc remote modify origin password "06082024BMLE"   # on mettra à jour par un secret dès que possible
           dvc pull
 
+      - name: Pull Data from DVC
+        run: |
+          dvc pull
+          echo "✅ DVC data pulled successfully."
+
+      # Étape 3 : Vérifier si le fichier xgboost_model.json est bien récupéré
       - name: Ensure model exists
         run: |
           if [ ! -f config/model/xgboost_model.json ]; then
@@ -103,8 +109,12 @@ jobs:
           dvc add data/processed/X_test.csv
           dvc add data/processed/y_train.csv
           dvc add data/processed/y_test.csv
-          dvc add config/model/xgboost_model.json
-          git add data/processed/*.dvc config/model/xgboost_model.json.dvc .gitignore
+          if [ -f config/model/xgboost_model.json ]; then
+            dvc add config/model/xgboost_model.json
+            git add config/model/xgboost_model.json.dvc
+          fi
+          dvc add mlflow/
+          git add data/processed/*.dvc mlflow/*.dvc .gitignore
           git commit -m "Mise à jour des données traitées et du modèle entraîné" || true
           dvc push
 
