@@ -58,7 +58,7 @@ jobs:
 
       # Étape 3 : Installer les dépendances Python
       - name: Install dependencies (preprocess)
-        run: pip install -r ./src/preprocess/requirements.txt
+        run: python3.9 -m pip install -r ./src/preprocess/requirements.txt
 
       - name: Run unit tests
         run: pytest ./tests_unitaires/test_preprocess.py --maxfail=3 --disable-warnings 
@@ -67,7 +67,7 @@ jobs:
       - name: Build Docker images (preprocess)
         run: docker build -t preprocess-test:local ./src/preprocess/
 
-        
+
 
 
 
