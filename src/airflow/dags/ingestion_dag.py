@@ -1,7 +1,7 @@
 from airflow import DAG
-from airflow.utils.dates import days_ago           #type: ignore
-from airflow.operators.python import PythonOperator#type: ignore
-from tools import start_existing_container          #type: ignore
+from airflow.utils.dates import days_ago            #type: ignore
+from airflow.operators.python import PythonOperator #type: ignore
+from tools import *                                 #type: ignore
 
 with DAG(
     dag_id='Ingestion',
@@ -17,3 +17,5 @@ with DAG(
     ingestion_task = PythonOperator(task_id='start_ingestion_container',
                                     python_callable=start_existing_container,
                                     op_kwargs={'container_name': 'meteo_group-ingestion-1'})
+
+    ingestion_task 

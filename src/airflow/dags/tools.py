@@ -1,10 +1,12 @@
 import docker
 import requests
+from datetime import datetime
+import subprocess as sp
 
 def start_existing_container(container_name:str):
     client = docker.from_env()
     container = client.containers.get(container_name)
-    container.start()
+    container.start()      
     container.wait()
 
 def load_model_script(model_name:str="model", alias:str="model_last"):
@@ -17,3 +19,4 @@ def load_model_script(model_name:str="model", alias:str="model_last"):
         print(response.text)
     else:
         print("Error:", response.text)
+

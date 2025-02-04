@@ -19,7 +19,16 @@ jobs:
         # env:
         #   DVC_PASSWORD: ${{ secrets.DVC_PASSWORD }}
         run: |
+          apt update 
+           apt install -y git 
           pip install dvc
+          pip install dvc 
+          git init 
+          git config --global user.email 'you@example.com' 
+          git config --global user.name 'Your Name' 
+          dvc init -f 
+          git add .dvc 
+          git commit -m 'Initialize DVC' 
           dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
           dvc remote modify origin auth basic
           dvc remote modify origin user bmle-aug24

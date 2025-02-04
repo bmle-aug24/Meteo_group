@@ -24,5 +24,5 @@ with DAG(
     update_model_task = PythonOperator(task_id='update_model',
                                        python_callable=load_model_script,
                                        op_kwargs={'model_name': 'model', 'alias': 'model_last'})
-    
+       
     preprocess_task >> training_task >> update_model_task

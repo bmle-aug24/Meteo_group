@@ -1,8 +1,7 @@
 [core]
     remote = origin
-
-[remote "origin"]
+['remote "origin"']
     url = https://dagshub.com/bmle-aug24/Meteo_group.dvc
     auth = basic
     user = bmle-aug24
-    password = 06082024BMLE
+    password = 80f0fd7d1ab6a2b1e95664936d78045d71c78e17
