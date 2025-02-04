@@ -6,7 +6,7 @@ env/
 .venv/
 airflow_env/
 train_env/
-env_test/*
+src/ingest/env_test/
 
 # Fichiers temporaires de Jupyter Notebook
 .ipynb_checkpoints/
