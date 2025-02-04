@@ -66,6 +66,7 @@ x-airflow-common: &airflow-common
     - ./logs/airflow/:/opt/airflow/logs
     - ./src/airflow/plugins:/opt/airflow/plugins
     - /var/run/docker.sock:/var/run/docker.sock
+    - .:/opt/airflow/repo
 
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
@@ -87,8 +88,8 @@ services:
       - ./:/app/repo
     working_dir: /app
     entrypoint: ["/bin/bash", "/app/script.sh"]
-    environment:
-      - RUN_COMMAND=true
+    #environment:
+    #  - INITIALIZED=false
     restart: "no"
 
 #Airflow services

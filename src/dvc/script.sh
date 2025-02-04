@@ -1,27 +1,25 @@
 #!/bin/bash
 
-if [ "$RUN_COMMAND" = "true" ]; then
-    echo "Running default command..." &&
+if test ! -f "/app/.initialized"; then
+    echo "Running initialization command..." &&
     apt update && apt install -y git &&
     pip install dvc &&
     cd /app/repo &&
     ls -a &&
     git status &&
-    dvc status &&
-    #git init &&
-    #git config --global user.email 'you@example.com' &&
-    #git config --global user.name 'Your Name' &&
-    #dvc init -f &&
-    #git add .dvc &&
-    #git commit -m 'Initialize DVC' &&
-    #dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc &&
-    #dvc remote modify origin auth basic &&
-    #dvc remote modify origin user bmle-aug24 &&
-    #dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17 &&
-    #dvc remote default origin &&
     dvc pull data/raw --force &&
     echo 'Pull completed'  # Récupère les fichiers versionnés depuis DagsHub
-else
-    echo "Skipping default command..."
-    tail -f /dev/null
+
+    touch /app/.initialized
+    echo "Initialization complete."
+    exit 0
 fi
+echo "Skipping initialization command..."
+
+if test "$#" -gt 0 ; then
+    echo "Executing provided command: $@"
+    exec "$@"
+    exit 0
+fi
+#tail -f /dev/null
+
