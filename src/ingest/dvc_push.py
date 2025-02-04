@@ -6,6 +6,8 @@ from datetime import datetime
 def main(folder:str="."):
     files = ["data/raw"]
     message_commit  = f"Update_DVC {datetime.today().strftime('%Y-%m-%d %H:%M:%S')}"
+    sp.run(["git", "config", "--global", "user.name", "Application"])
+    sp.run(["git", "config", "--global", "user.email", "meteo.bmle.24@gmail.com"])
     for file in files:
         sp.run(["dvc", "add", file], check=True, cwd=folder)
         sp.run(["git", "add", file+".dvc"], check=True, cwd=folder)
