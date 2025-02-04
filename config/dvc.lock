@@ -77,14 +77,14 @@ stages:
       md5: 50da9ec63a622408404d36f12f84ae1d
       size: 3628
       isexec: true
-    outs:
-    - path: metrics/metrics.json
-      hash: md5
-      md5: af8b947c8e985fa8fce7b61a84c849a1
-      size: 127
-      isexec: true
-    - path: model/xgboost_model.json
-      hash: md5
-      md5: 8d053083179358f3e970f769be59b529
-      size: 670637
-      isexec: true
+    # outs:
+    # - path: metrics/metrics.json
+    #   hash: md5
+    #   md5: af8b947c8e985fa8fce7b61a84c849a1
+    #   size: 127
+    #   isexec: true
+    # - path: model/xgboost_model.json
+    #   hash: md5
+    #   md5: 8d053083179358f3e970f769be59b529
+    #   size: 670637
+    #   isexec: true
