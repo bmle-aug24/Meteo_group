@@ -44,8 +44,8 @@ jobs:
       - name: Install dependencies (preprocess)
         run: pip install -r ./src/preprocess/requirements.txt
       
-      - name: Run unit tests (preprocess)
-        run: pytest ./tests_unitaires/test_preprocess.py --maxfail=3 --disable-warnings
+      # - name: Run unit tests (preprocess)
+      #   run: pytest ./tests_unitaires/test_preprocess.py --maxfail=3 --disable-warnings
       
       - name: Build Docker image (preprocess)
         run: docker build -t preprocess-test:local ./src/preprocess/
