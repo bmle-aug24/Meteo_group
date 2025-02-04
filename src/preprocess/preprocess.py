@@ -3,6 +3,18 @@ import yaml
 from sklearn.model_selection import train_test_split
 import os
 
+from logger import logger
+
+def process_data():
+    logger.info("Début du traitement des données...")
+    try:
+        # Simuler une erreur
+        raise ValueError("Erreur de test")
+    except Exception as e:
+        logger.error(f"Erreur rencontrée : {e}")
+
+process_data()
+
 
 def load_config(yaml_path):
     with open(yaml_path, "r") as file:
