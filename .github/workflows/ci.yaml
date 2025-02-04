@@ -11,9 +11,9 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [ingest, preprocess, train] # Liste des services
+    # strategy:
+    #   matrix:
+    #     service: [ingest, preprocess, train] # Liste des services
 
     steps:
       # Étape 1 : Récupérer le code source
