@@ -1,5 +1,8 @@
 [core]
     remote = origin
-['remote "origin"']
-    url = s3://dvc
-    endpointurl = https://dagshub.com/bmle-aug24/Meteo_group.s3
+
+[remote "origin"]
+    url = https://dagshub.com/bmle-aug24/Meteo_group.dvc
+    auth = basic
+    user = bmle-aug24
+    password = 06082024BMLE

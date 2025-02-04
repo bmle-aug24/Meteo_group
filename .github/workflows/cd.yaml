@@ -1,68 +1,11 @@
-# name: CD for Microservices
-
-# on:
-#   workflow_run:
-#     workflows: ["CI for Microservices"]
-#     types:
-#       - completed
-
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       # Étape 1 : Récupérer le code source
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-
-#       # Étape 2 : Installer DVC et récupérer les données depuis DagsHub
-#       - name: Install DVC & Pull Data
-#         run: |
-#           pip install dvc
-#           dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
-#           dvc remote modify origin auth basic
-#           dvc remote modify origin user bmle-aug24
-#           dvc remote modify origin password 80f0fd7d1ab6a2b1e95664936d78045d71c78e17
-#           dvc pull
-
-#       # Étape 3 : Déployer les services avec Docker Compose
-#       - name: Deploy with Docker Compose
-#         run: |
-#           docker-compose down # Arrêter les services existants
-#           docker-compose up -d # Lancer les services définis dans docker-compose.yml
-
-#       # Étape 4 : Pousser les données versionnées vers DagsHub
-#       - name: Version RAW Data and Push to DagsHub
-#         run: |
-#           dvc add data/raw # Ajouter les données RAW générées par ingestion
-#           git add data/raw.dvc .gitignore
-#           git commit -m "Versionnement des données RAW (ingestion)"
-#           dvc push
-
-#       # Étape 5 : Versionner les données traitées et le modèle
-#       - name: Push Processed Data and Model to DagsHub
-#         run: |
-#           dvc add data/processed/X_train.csv
-#           dvc add data/processed/X_test.csv
-#           dvc add data/processed/y_train.csv
-#           dvc add data/processed/y_test.csv
-#           dvc add mlflow/*
-#           git add data/processed/*.dvc mlflow/*.dvc .gitignore
-#           git commit -m "Mise à jour des données traitées et du modèle entraîné"
-#           dvc push
-
 name: CD for Microservices
 
-# on:
-#   workflow_run:
-#     workflows: ["CI for Microservices"]
-#     types:
-#       - completed
-
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI for Microservices"]
+    types:
+      - completed
+
 
 jobs:
   deploy:
@@ -86,6 +29,7 @@ jobs:
 
       - name: Pull Data from DVC
         run: |
+          pip install dvc  # installe dvc si ce n'est pas déjà fait
           dvc pull
           echo "✅ DVC data pulled successfully."
 
@@ -96,6 +40,14 @@ jobs:
             echo "ERROR: xgboost_model.json is missing!"
             exit 1
           fi
+
+      - name: Ensure metrics.json exists
+        run: |
+          if [ ! -f config/metrics/metrics.json ]; then
+            echo "WARNING: metrics.json is missing!"
+            touch config/metrics/metrics.json  # Crée un fichier vide temporaire
+          fi
+          # Ajout d'une vérification et création d'un fichier temporaire si metrics.json est manquant.     
 
       - name: Deploy with Docker Compose
         run: |
@@ -115,10 +67,17 @@ jobs:
           dvc add data/processed/X_test.csv
           dvc add data/processed/y_train.csv
           dvc add data/processed/y_test.csv
+
           if [ -f config/model/xgboost_model.json ]; then
             dvc add config/model/xgboost_model.json
             git add config/model/xgboost_model.json.dvc
           fi
+
+          if [ -f config/metrics/metrics.json ]; then
+            dvc add config/metrics/metrics.json
+            git add config/metrics/metrics.json.dvc
+          fi
+          
           dvc add mlflow/
           git add data/processed/*.dvc mlflow/*.dvc .gitignore
           git commit -m "Mise à jour des données traitées et du modèle entraîné" || true
