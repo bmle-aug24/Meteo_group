@@ -234,6 +234,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./config:/app/config
+      - ./:/app/repo
     networks:
       - app_network
 
