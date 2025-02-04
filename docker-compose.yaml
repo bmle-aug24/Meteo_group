@@ -83,7 +83,7 @@ services:
       - ./data:/app/data
       - ./mlflow:/app/mlflow
       - ./src/dvc/script.sh:/app/script.sh
-      #- ./:/app/
+      - ./:/app/repo
     working_dir: /app
     entrypoint: ["/bin/bash", "/app/script.sh"]
     environment:

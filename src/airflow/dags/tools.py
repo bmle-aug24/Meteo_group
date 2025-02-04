@@ -7,7 +7,7 @@ def start_existing_container(container_name:str, command:str=None):
     container.start()
     if command: 
         container.exec_run("export RUN_COMMAND=false && sh /app/script.sh")
-        container.exec_run(command)
+        #container.exec_run(command)
     container.wait()
 
 def load_model_script(model_name:str="model", alias:str="model_last"):
