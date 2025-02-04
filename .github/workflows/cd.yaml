@@ -15,34 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install DVC & Pull Data
-        # env:
-        #   DVC_PASSWORD: ${{ secrets.DVC_PASSWORD }}
-        run: |
-          apt update 
-           apt install -y git 
-          pip install dvc
-          pip install dvc 
-          git init 
-          git config --global user.email 'you@example.com' 
-          git config --global user.name 'Your Name' 
-          dvc init -f 
-          git add .dvc 
-          git commit -m 'Initialize DVC' 
-          dvc remote add origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
-          dvc remote modify origin auth basic
-          dvc remote modify origin user bmle-aug24
-          dvc remote modify origin password "06082024BMLE"   # on mettra à jour par un secret dès que possible
-          dvc pull
-        
 
-      - name: Pull Data from DVC
-        run: |
-          pip install dvc  # installe dvc si ce n'est pas déjà fait
-          dvc pull
-          echo "✅ DVC data pulled successfully."
-
-      # Étape 3 : Vérifier si le fichier xgboost_model.json est bien récupéré
       - name: Ensure model exists
         run: |
           if [ ! -f config/model/xgboost_model.json ]; then
@@ -63,32 +36,6 @@ jobs:
           docker-compose down --remove-orphans
           docker-compose up -d --build
 
-      - name: Version RAW Data and Push to DagsHub
+      - name: Check Docker Compose logs
         run: |
-          dvc add data/raw || true
-          git add data/raw.dvc .gitignore
-          git commit -m "Versionnement des données RAW (ingestion)" || true
-          dvc push
-
-      - name: Push Processed Data and Model to DagsHub
-        run: |
-          dvc add data/processed/X_train.csv
-          dvc add data/processed/X_test.csv
-          dvc add data/processed/y_train.csv
-          dvc add data/processed/y_test.csv
-
-          if [ -f config/model/xgboost_model.json ]; then
-            dvc add config/model/xgboost_model.json
-            git add config/model/xgboost_model.json.dvc
-          fi
-
-          if [ -f config/metrics/metrics.json ]; then
-            dvc add config/metrics/metrics.json
-            git add config/metrics/metrics.json.dvc
-          fi
-          
-          dvc add mlflow/
-          git add data/processed/*.dvc mlflow/*.dvc .gitignore
-          git commit -m "Mise à jour des données traitées et du modèle entraîné" || true
-          dvc push
-
+          docker-compose logs
