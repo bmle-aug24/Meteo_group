@@ -51,6 +51,31 @@ jobs:
         run: docker build -t preprocess-test:local ./src/preprocess/
 
 
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Python 3.11.8 for train
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11.8'
+
+      - name: Install dependencies (train)
+        run: pip install -r ./src/train/requirements.txt
+
+      - name: Run unit tests (train)
+        run: pytest ./tests_unitaires/test_train.py --maxfail=3 --disable-warnings
+
+      - name: Run train script
+        run: python ./src/train/train.py
+
+      - name: Build Docker image (train)
+        run: docker build -t train-test:local ./src/train/
+
+
+
         
 
 # name: CI for Microservices
