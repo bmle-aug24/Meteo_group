@@ -16,7 +16,7 @@ def main(folder:str="."):
         sp.run(["git", "commit", "-m", message_commit], check=True, cwd=folder)
     except sp.CalledProcessError:
         print("No changes to commit.")
-    sp.run(["git", "push"], check=True)
+    sp.run(["git", "push"], check=True, cwd=folder)
     print("Data pushed for versioning")
 
 if __name__ == "__main__":
