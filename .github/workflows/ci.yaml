@@ -20,55 +20,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Étape 2 : Installer DVC et récupérer les données depuis DagsHub
-      # - name: Install DVC & Pull Data
-      #   run: |
-      #     pip install dvc
-      #     dvc remote add --force origin https://dagshub.com/bmle-aug24/Meteo_group.dvc
-      #     dvc remote modify origin auth basic
-      #     dvc remote modify origin user bmle-aug24
-      #     dvc remote modify origin password "06082024BMLE"
-      #     dvc pull --force --jobs 1
-
-      # # Étape 3 : Installer les dépendances Python
-      # - name: Install dependencies
-      #   run: pip install -r ./src/${{ matrix.service }}/requirements.txt
-
-
-      # # Étape 4 : Exécuter les tests unitaires
-      # - name: Run unit tests
-      #   run: pytest ./src/${{ matrix.service }}/tests_unitaires/ --maxfail=3 --disable-warnings
-
-      # # Étape 5 : Construire les images Docker
-      # - name: Build Docker images
-      #   run: docker build -t ${{ matrix.service }}:local ./src/${{ matrix.service }}
-
-
-
-
-
-
-      # Étape 3 : Installer les dépendances Python INGEST
+      # Configurer Python 3.12 pour l’ingest
+      - name: Setup Python 3.12 for ingest
+        id: python312
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
       - name: Install dependencies (ingest)
-        run: pip install -r ./src/ingest/requirements.txt
-
-      # Étape 5 : Construire les images Docker
-      - name: Build Docker images (ingest)
+        run: ${{ steps.python312.outputs.python-path }}/bin/pip install -r ./src/ingest/requirements.txt
+      
+      - name: Build Docker image (ingest)
         run: docker build -t ingest-test:local ./src/ingest/
 
-      # Étape 3 : Installer les dépendances Python
+      # Configurer Python 3.9 pour le preprocess
+      - name: Setup Python 3.9 for preprocess
+        id: python39
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
       - name: Install dependencies (preprocess)
-        run: python3.9 -m pip install -r ./src/preprocess/requirements.txt
-
-      - name: Run unit tests
-        run: pytest ./tests_unitaires/test_preprocess.py --maxfail=3 --disable-warnings 
-
-      # Étape 5 : Construire les images Docker
-      - name: Build Docker images (preprocess)
+        run: ${{ steps.python39.outputs.python-path }}/bin/pip install -r ./src/preprocess/requirements.txt
+      
+      - name: Run unit tests (preprocess)
+        run: ${{ steps.python39.outputs.python-path }}/bin/pytest ./tests_unitaires/test_preprocess.py --maxfail=3 --disable-warnings
+      
+      - name: Build Docker image (preprocess)
         run: docker build -t preprocess-test:local ./src/preprocess/
-
-
-
 
 
         
