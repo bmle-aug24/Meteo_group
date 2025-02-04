@@ -14,5 +14,4 @@ WORKDIR /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Lancer le script d'ingestion
-CMD ["python", "script_meteo.py"]
-CMD ["python", "dvc_push.py", "app/repo"]
+CMD ["python", "script_meteo.py", "&&", "python", "dvc_push.py", "app/repo"]
