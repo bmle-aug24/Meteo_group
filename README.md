@@ -214,6 +214,29 @@ Lien vers l'interface MLFlow qui tourne au port `8100` ( [http:localhost:8100](h
 
 ![mlflow](_readme/images/Image6.png)
 
+### 4.3 Grafana & Prometheus (Monitoring)
+Pour superviser et visualiser les métriques du système, nous utilisons Grafana et Prometheus.
+
+- #### Accéder à Grafana
+
+- Ouvrez http://localhost:3000 dans votre navigateur
+- Connectez-vous avec les identifiants par défaut (par exemple, admin / admin)
+
+- #### Ajouter Prometheus comme source de données
+
+- Dans Grafana, cliquez sur Configuration → Data Sources → Add data source → Prometheus
+- Indiquez l’URL : http://prometheus:9000 (si vous utilisez le réseau interne Docker)
+- Testez la connexion puis enregistrez.
+
+- #### Importer un dashboard
+
+- Dans Grafana, cliquez sur + → Import
+- Saisissez l’ID d’un dashboard existant (par exemple 3662)
+- Sélectionnez la source de données Prometheus précédemment créée
+- Cliquez sur Import pour finaliser.
+
+Une fois le dashboard importé, vous pourrez visualiser diverses métriques (taux de requêtes, consommation de ressources, dérive du modèle, etc.) pour suivre en temps réel l’état de votre application.
+
 ## 5. Auteurs
 Ce projet a été développés dans le cadre de la formation Machine Learning Engineer, format bootcamp de DataScientest. Les membres et contributeurs du répertoire sont: 
 
